@@ -1,0 +1,2232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>TAANISH | Inventory</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #f5f6f8;
+
+            color: #222;
+        }
+
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        .header {
+
+            background: #111827;
+
+            color: white;
+
+            padding: 18px 25px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+        }
+
+
+        .header h1 {
+
+            margin: 0;
+
+            font-size: 22px;
+
+            letter-spacing: .5px;
+        }
+
+
+        .back-btn {
+
+            background: white;
+
+            color: #111827;
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: 600;
+        }
+
+
+        .back-btn:hover {
+
+            background: #e5e7eb;
+        }
+
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
+        .container {
+
+            max-width: 1250px;
+
+            margin: 25px auto;
+
+            padding: 0 15px;
+        }
+
+
+        /* =========================
+           SUMMARY CARDS
+        ========================= */
+
+        .cards {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 15px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .card,
+        .section {
+
+            background: white;
+
+            border-radius: 10px;
+
+            box-shadow:
+                0 2px 8px
+                rgba(0,0,0,0.06);
+        }
+
+
+        .card {
+
+            padding: 20px;
+        }
+
+
+        .card-title {
+
+            color: #666;
+
+            font-size: 13px;
+
+            margin-bottom: 8px;
+        }
+
+
+        .card-value {
+
+            font-size: 24px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section {
+
+            padding: 22px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .section h2 {
+
+            margin-top: 0;
+
+            font-size: 18px;
+        }
+
+
+        /* =========================
+           FORM
+        ========================= */
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 15px;
+        }
+
+
+        label {
+
+            display: block;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+        }
+
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 10px;
+
+            border:
+                1px solid #ccc;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            outline: none;
+        }
+
+
+        input:focus,
+        select:focus {
+
+            border-color: #111827;
+        }
+
+
+        .save-btn {
+
+            width: 100%;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            background: #111827;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+            font-weight: bold;
+        }
+
+
+        .save-btn:hover {
+
+            background: #1f2937;
+        }
+
+
+        /* =========================
+           MESSAGE
+        ========================= */
+
+        .message {
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border-radius: 6px;
+
+            display: none;
+
+            font-size: 13px;
+        }
+
+
+        .success {
+
+            display: block;
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .error {
+
+            display: block;
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           SEARCH
+        ========================= */
+
+        .search {
+
+            width: 100%;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        .table-wrapper {
+
+            overflow-x: auto;
+        }
+
+
+        table {
+
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 850px;
+        }
+
+
+        th,
+        td {
+
+            padding: 11px 8px;
+
+            border-bottom:
+                1px solid #eee;
+
+            text-align: left;
+
+            font-size: 13px;
+        }
+
+
+        th {
+
+            background: #f3f4f6;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================
+           STOCK STATUS
+        ========================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 5px 8px;
+
+            border-radius: 5px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+
+        .status-ok {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .status-low {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .status-out {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        /* =========================
+           MOVEMENT BADGES
+        ========================= */
+
+        .movement-badge {
+
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border-radius: 5px;
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+
+        .movement-in {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .movement-out {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        .movement-adjustment {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        /* =========================
+           EMPTY / LOADING
+        ========================= */
+
+        .empty {
+
+            text-align: center;
+
+            color: #777;
+
+            padding: 25px;
+        }
+
+
+        .loading {
+
+            text-align: center;
+
+            color: #777;
+
+            padding: 25px;
+        }
+
+
+        /* =========================
+           HISTORY HEADER
+        ========================= */
+
+        .history-header {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin-bottom: 10px;
+        }
+
+
+        .history-status {
+
+            font-size: 12px;
+
+            color: #777;
+        }
+
+
+        .refresh-btn {
+
+            background: white;
+
+            border:
+                1px solid #d1d5db;
+
+            padding: 7px 11px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+
+        .refresh-btn:hover {
+
+            background: #f3f4f6;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .cards {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .cards {
+
+                grid-template-columns: 1fr;
+            }
+
+
+            .header {
+
+                padding: 15px;
+            }
+
+
+            .header h1 {
+
+                font-size: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <h1>
+        TAANISH — Inventory
+    </h1>
+
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='index.html'"
+    >
+        Dashboard
+    </button>
+
+</div>
+
+
+
+<div class="container">
+
+
+    <!-- =========================
+         SUMMARY CARDS
+    ========================= -->
+
+    <div class="cards">
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Products
+            </div>
+
+            <div
+                class="card-value"
+                id="totalProducts"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Stock Units
+            </div>
+
+            <div
+                class="card-value"
+                id="totalUnits"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Low Stock
+            </div>
+
+            <div
+                class="card-value"
+                id="lowStock"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Out of Stock
+            </div>
+
+            <div
+                class="card-value"
+                id="outStock"
+            >
+                0
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =========================
+         STOCK MOVEMENT
+    ========================= -->
+
+    <div class="section">
+
+        <h2>
+            Stock Movement
+        </h2>
+
+
+        <div class="form-grid">
+
+
+            <div>
+
+                <label>
+                    Product
+                </label>
+
+
+                <select
+                    id="productSelect"
+                >
+
+                    <option value="">
+                        Select Product
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Movement Type
+                </label>
+
+
+                <select
+                    id="movementType"
+                >
+
+                    <option value="IN">
+                        IN — Add Stock
+                    </option>
+
+                    <option value="OUT">
+                        OUT — Remove Stock
+                    </option>
+
+                    <option value="ADJUSTMENT">
+                        ADJUSTMENT — Set Stock
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Quantity
+                </label>
+
+
+                <input
+                    type="number"
+                    id="quantity"
+                    min="0"
+                    value="1"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Note
+                </label>
+
+
+                <input
+                    type="text"
+                    id="note"
+                    placeholder="Optional note"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="saveMovement()"
+        >
+            Save Stock Movement
+        </button>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
+    </div>
+
+
+
+    <!-- =========================
+         CURRENT INVENTORY
+    ========================= -->
+
+    <div class="section">
+
+        <h2>
+            Current Inventory
+        </h2>
+
+
+        <input
+            class="search"
+            type="text"
+            id="search"
+            placeholder="Search product or barcode..."
+            oninput="displayProducts()"
+        >
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Product</th>
+
+                        <th>Barcode</th>
+
+                        <th>Cost</th>
+
+                        <th>Selling</th>
+
+                        <th>Stock</th>
+
+                        <th>Minimum</th>
+
+                        <th>Stock Value</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="inventoryTable"
+                >
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="loading"
+                        >
+                            Loading inventory...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =========================
+         STOCK MOVEMENT HISTORY
+    ========================= -->
+
+    <div class="section">
+
+
+        <div class="history-header">
+
+            <div>
+
+                <h2
+                    style="margin-bottom:4px;"
+                >
+                    Stock Movement History
+                </h2>
+
+                <div
+                    id="historyStatus"
+                    class="history-status"
+                >
+                    Loading history...
+                </div>
+
+            </div>
+
+
+            <button
+                class="refresh-btn"
+                onclick="loadMovements()"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Product</th>
+
+                        <th>Type</th>
+
+                        <th>Quantity</th>
+
+                        <th>Before</th>
+
+                        <th>After</th>
+
+                        <th>Note</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody
+                    id="movementTable"
+                >
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="loading"
+                        >
+                            Loading movement history...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   API
+========================================================= */
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+const token =
+    localStorage.getItem(
+        "access_token"
+    );
+
+
+/* =========================================================
+   AUTH CHECK
+========================================================= */
+
+if (!token) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+let products = [];
+
+
+/* =========================================================
+   AUTH HEADERS
+========================================================= */
+
+function authHeaders() {
+
+    return {
+
+        "Authorization":
+            `Bearer ${token}`,
+
+        "Content-Type":
+            "application/json"
+
+    };
+
+}
+
+
+/* =========================================================
+   UNAUTHORIZED HANDLER
+========================================================= */
+
+function handleUnauthorized(
+    response
+) {
+
+    if (
+        response.status === 401
+    ) {
+
+        localStorage.removeItem(
+            "access_token"
+        );
+
+        window.location.href =
+            "login.html";
+
+        return true;
+
+    }
+
+
+    return false;
+
+}
+
+
+/* =========================================================
+   MESSAGE
+========================================================= */
+
+function showMessage(
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.className =
+        `message ${type}`;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            box.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        String(value);
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================================================
+   LOAD PRODUCTS
+========================================================= */
+
+async function loadProducts() {
+
+    const table =
+        document.getElementById(
+            "inventoryTable"
+        );
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/products/`,
+                {
+                    method: "GET",
+
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (
+            handleUnauthorized(
+                response
+            )
+        ) {
+
+            return false;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to load products."
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            !Array.isArray(data)
+        ) {
+
+            throw new Error(
+                "Invalid product data received."
+            );
+
+        }
+
+
+        products = data;
+
+
+        updateSummary();
+
+        populateProductSelect();
+
+        displayProducts();
+
+
+        return true;
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Products error:",
+            error
+        );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="empty"
+                >
+
+                    Could not load inventory.
+
+                    <br><br>
+
+                    ${escapeHtml(
+                        error.message
+                    )}
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        return false;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD MOVEMENT HISTORY
+========================================================= */
+
+async function loadMovements() {
+
+    const table =
+        document.getElementById(
+            "movementTable"
+        );
+
+
+    const status =
+        document.getElementById(
+            "historyStatus"
+        );
+
+
+    table.innerHTML = `
+
+        <tr>
+
+            <td
+                colspan="8"
+                class="loading"
+            >
+                Loading movement history...
+            </td>
+
+        </tr>
+
+    `;
+
+
+    status.textContent =
+        "Loading history...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/inventory/movements`,
+                {
+                    method: "GET",
+
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (
+            handleUnauthorized(
+                response
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            let message =
+                "Failed to load stock movement history.";
+
+
+            try {
+
+                const errorData =
+                    await response.json();
+
+
+                if (
+                    errorData.detail
+                ) {
+
+                    message =
+                        errorData.detail;
+
+                }
+
+            }
+
+            catch (error) {
+
+                // Ignore JSON parsing error
+
+            }
+
+
+            throw new Error(
+                message
+            );
+
+        }
+
+
+        const movements =
+            await response.json();
+
+
+        console.log(
+            "Movement history:",
+            movements
+        );
+
+
+        table.innerHTML = "";
+
+
+        if (
+            !Array.isArray(
+                movements
+            ) ||
+            movements.length === 0
+        ) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty"
+                    >
+
+                        No stock movements yet.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            status.textContent =
+                "No movements recorded";
+
+
+            return;
+
+        }
+
+
+        /*
+         * Backend already returns movements
+         * ordered by ID descending.
+         *
+         * Therefore we do NOT reverse them.
+         */
+
+
+        movements.forEach(
+            movement => {
+
+
+                /* =========================
+                   FIND PRODUCT NAME
+                ========================= */
+
+                const product =
+                    products.find(
+                        product =>
+                            Number(
+                                product.id
+                            ) ===
+                            Number(
+                                movement.product_id
+                            )
+                    );
+
+
+                /*
+                 * Normally product should
+                 * always be found because
+                 * products are loaded BEFORE
+                 * movement history.
+                 */
+
+
+                const productName =
+                    product
+                        ? product.name
+                        : `Product #${movement.product_id}`;
+
+
+                /* =========================
+                   ROW
+                ========================= */
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                /* =========================
+                   MOVEMENT TYPE
+                ========================= */
+
+                let movementClass =
+                    "movement-adjustment";
+
+
+                if (
+                    movement.movement_type ===
+                    "IN"
+                ) {
+
+                    movementClass =
+                        "movement-in";
+
+                }
+
+
+                else if (
+                    movement.movement_type ===
+                    "OUT"
+                ) {
+
+                    movementClass =
+                        "movement-out";
+
+                }
+
+
+                /* =========================
+                   DATE
+                ========================= */
+
+                let dateText =
+                    "-";
+
+
+                if (
+                    movement.created_at
+                ) {
+
+                    const date =
+                        new Date(
+                            movement.created_at
+                        );
+
+
+                    if (
+                        !isNaN(
+                            date.getTime()
+                        )
+                    ) {
+
+                        dateText =
+                            date.toLocaleString(
+                                "en-IN"
+                            );
+
+                    }
+
+                }
+
+
+                /* =========================
+                   TABLE ROW
+                ========================= */
+
+                row.innerHTML = `
+
+                    <td>
+                        ${movement.id}
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            ${escapeHtml(
+                                productName
+                            )}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="movement-badge ${movementClass}"
+                        >
+
+                            ${escapeHtml(
+                                movement.movement_type
+                            )}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+                        ${movement.quantity}
+                    </td>
+
+
+                    <td>
+                        ${movement.stock_before}
+                    </td>
+
+
+                    <td>
+
+                        <strong>
+                            ${movement.stock_after}
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+                        ${escapeHtml(
+                            movement.note || "-"
+                        )}
+                    </td>
+
+
+                    <td>
+                        ${dateText}
+                    </td>
+
+                `;
+
+
+                table.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+        status.textContent =
+            `${movements.length} movement${
+                movements.length === 1
+                    ? ""
+                    : "s"
+            } recorded`;
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Movement history error:",
+            error
+        );
+
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="8"
+                    class="empty"
+                >
+
+                    <strong>
+                        Could not load movement history.
+                    </strong>
+
+                    <br><br>
+
+                    ${escapeHtml(
+                        error.message
+                    )}
+
+                    <br><br>
+
+                    <button
+                        class="refresh-btn"
+                        onclick="loadMovements()"
+                    >
+                        Try Again
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+
+        status.textContent =
+            "History failed to load";
+
+    }
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function updateSummary() {
+
+    let totalUnits = 0;
+
+    let lowStock = 0;
+
+    let outStock = 0;
+
+
+    products.forEach(
+        product => {
+
+            const stock =
+                Number(
+                    product.stock || 0
+                );
+
+
+            const minimum =
+                Number(
+                    product.min_stock || 0
+                );
+
+
+            totalUnits +=
+                stock;
+
+
+            if (
+                stock === 0
+            ) {
+
+                outStock++;
+
+            }
+
+
+            else if (
+                stock <= minimum
+            ) {
+
+                lowStock++;
+
+            }
+
+        }
+    );
+
+
+    document.getElementById(
+        "totalProducts"
+    ).textContent =
+        products.length;
+
+
+    document.getElementById(
+        "totalUnits"
+    ).textContent =
+        totalUnits;
+
+
+    document.getElementById(
+        "lowStock"
+    ).textContent =
+        lowStock;
+
+
+    document.getElementById(
+        "outStock"
+    ).textContent =
+        outStock;
+
+}
+
+
+/* =========================================================
+   PRODUCT SELECT
+========================================================= */
+
+function populateProductSelect() {
+
+    const select =
+        document.getElementById(
+            "productSelect"
+        );
+
+
+    select.innerHTML = `
+
+        <option value="">
+            Select Product
+        </option>
+
+    `;
+
+
+    products.forEach(
+        product => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                product.id;
+
+
+            option.textContent =
+                `${product.name} | Stock: ${product.stock}`;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   CURRENT INVENTORY TABLE
+========================================================= */
+
+function displayProducts() {
+
+    const search =
+        document.getElementById(
+            "search"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    const table =
+        document.getElementById(
+            "inventoryTable"
+        );
+
+
+    const filtered =
+        products.filter(
+            product => {
+
+                const name =
+                    String(
+                        product.name || ""
+                    )
+                    .toLowerCase();
+
+
+                const barcode =
+                    String(
+                        product.barcode || ""
+                    )
+                    .toLowerCase();
+
+
+                return (
+                    name.includes(search) ||
+                    barcode.includes(search)
+                );
+
+            }
+        );
+
+
+    table.innerHTML = "";
+
+
+    if (
+        filtered.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="9"
+                    class="empty"
+                >
+
+                    No products found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(
+        product => {
+
+            const stock =
+                Number(
+                    product.stock || 0
+                );
+
+
+            const minimum =
+                Number(
+                    product.min_stock || 0
+                );
+
+
+            let statusText;
+
+            let statusClass;
+
+
+            if (
+                stock === 0
+            ) {
+
+                statusText =
+                    "OUT OF STOCK";
+
+                statusClass =
+                    "status-out";
+
+            }
+
+
+            else if (
+                stock <= minimum
+            ) {
+
+                statusText =
+                    "LOW STOCK";
+
+                statusClass =
+                    "status-low";
+
+            }
+
+
+            else {
+
+                statusText =
+                    "IN STOCK";
+
+                statusClass =
+                    "status-ok";
+
+            }
+
+
+            const stockValue =
+                stock *
+                Number(
+                    product.cost || 0
+                );
+
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${product.id}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        product.name
+                    )}
+                </td>
+
+
+                <td>
+                    ${escapeHtml(
+                        product.barcode || "-"
+                    )}
+                </td>
+
+
+                <td>
+                    ₹${Number(
+                        product.cost || 0
+                    ).toFixed(2)}
+                </td>
+
+
+                <td>
+                    ₹${Number(
+                        product.selling || 0
+                    ).toFixed(2)}
+                </td>
+
+
+                <td>
+
+                    <strong>
+                        ${stock}
+                    </strong>
+
+                </td>
+
+
+                <td>
+                    ${minimum}
+                </td>
+
+
+                <td>
+                    ₹${stockValue.toFixed(2)}
+                </td>
+
+
+                <td>
+
+                    <span
+                        class="status ${statusClass}"
+                    >
+
+                        ${statusText}
+
+                    </span>
+
+                </td>
+
+            `;
+
+
+            table.appendChild(
+                row
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   SAVE STOCK MOVEMENT
+========================================================= */
+
+async function saveMovement() {
+
+    const productId =
+        Number(
+            document.getElementById(
+                "productSelect"
+            ).value
+        );
+
+
+    const movementType =
+        document.getElementById(
+            "movementType"
+        ).value;
+
+
+    const quantity =
+        Number(
+            document.getElementById(
+                "quantity"
+            ).value
+        );
+
+
+    const note =
+        document.getElementById(
+            "note"
+        )
+        .value
+        .trim();
+
+
+    if (!productId) {
+
+        showMessage(
+            "Please select a product.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !Number.isInteger(
+            quantity
+        ) ||
+        quantity < 0
+    ) {
+
+        showMessage(
+            "Enter a valid whole-number quantity.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        movementType !== "ADJUSTMENT" &&
+        quantity <= 0
+    ) {
+
+        showMessage(
+            "Quantity must be greater than 0.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const movementData = {
+
+        product_id:
+            productId,
+
+        movement_type:
+            movementType,
+
+        quantity:
+            quantity,
+
+        note:
+            note || null
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/inventory/movement`,
+                {
+
+                    method:
+                        "POST",
+
+                    headers:
+                        authHeaders(),
+
+                    body:
+                        JSON.stringify(
+                            movementData
+                        )
+
+                }
+            );
+
+
+        if (
+            handleUnauthorized(
+                response
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Stock movement failed."
+            );
+
+        }
+
+
+        showMessage(
+            `Stock updated successfully. New stock: ${result.stock_after}`,
+            "success"
+        );
+
+
+        document.getElementById(
+            "productSelect"
+        ).value = "";
+
+
+        document.getElementById(
+            "movementType"
+        ).value =
+            "IN";
+
+
+        document.getElementById(
+            "quantity"
+        ).value =
+            1;
+
+
+        document.getElementById(
+            "note"
+        ).value =
+            "";
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Reload products first.
+         * This guarantees that the product
+         * names are available before history
+         * is loaded.
+         */
+
+        await loadProducts();
+
+        await loadMovements();
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Save movement error:",
+            error
+        );
+
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   START INVENTORY
+========================================================= */
+
+async function startInventory() {
+
+    /*
+     * IMPORTANT:
+     *
+     * Products MUST load first.
+     *
+     * Then movement history loads.
+     *
+     * This allows movement.product_id
+     * to be matched with product.id.
+     */
+
+    const productsLoaded =
+        await loadProducts();
+
+
+    if (
+        productsLoaded
+    ) {
+
+        await loadMovements();
+
+    }
+
+
+    else {
+
+        /*
+         * Even if products fail,
+         * try loading history.
+         */
+
+        await loadMovements();
+
+    }
+
+}
+
+
+startInventory();
+
+
+</script>
+
+</body>
+
+</html>

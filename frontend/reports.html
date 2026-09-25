@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Accounting</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #111827;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card-title {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .profit-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .profit-item {
+            padding: 18px;
+            border-radius: 8px;
+            background: #f3f4f6;
+        }
+
+        .profit-label {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 7px;
+        }
+
+        .profit-value {
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            padding: 10px 18px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        @media (max-width: 900px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profit-box {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Reports & Accounting</h1>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='index.html'">
+        Dashboard
+    </button>
+
+</div>
+
+
+<div class="container">
+
+    <button
+        class="refresh-btn"
+        onclick="loadReport()">
+        ↻ Refresh Report
+    </button>
+
+
+    <div id="status" class="status"></div>
+
+
+    <!-- MAIN CARDS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Sales
+            </div>
+
+            <div class="card-value">
+                ₹<span id="totalSales">0.00</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Purchases
+            </div>
+
+            <div class="card-value">
+                ₹<span id="totalPurchases">0.00</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Expenses
+            </div>
+
+            <div class="card-value">
+                ₹<span id="totalExpenses">0.00</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-title">
+                Net Profit
+            </div>
+
+            <div class="card-value">
+                ₹<span id="netProfit">0.00</span>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- PROFIT BREAKDOWN -->
+
+    <div class="section">
+
+        <h2>Profit Breakdown</h2>
+
+        <div class="profit-box">
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Sales Revenue
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="salesRevenue">0.00</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Gross Profit
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="grossProfit">0.00</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Net Profit
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="netProfit2">0.00</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- STOCK SUMMARY -->
+
+    <div class="section">
+
+        <h2>Inventory Summary</h2>
+
+        <div class="profit-box">
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Total Products
+                </div>
+
+                <div class="profit-value">
+                    <span id="totalProducts">0</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Total Stock Units
+                </div>
+
+                <div class="profit-value">
+                    <span id="totalStockUnits">0</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Inventory Purchase Value
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="inventoryValue">0.00</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ACCOUNTING SUMMARY -->
+
+    <div class="section">
+
+        <h2>Accounting Summary</h2>
+
+        <div class="profit-box">
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Gross Profit
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="accountGrossProfit">0.00</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Expenses
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="accountExpenses">0.00</span>
+                </div>
+
+            </div>
+
+
+            <div class="profit-item">
+
+                <div class="profit-label">
+                    Net Profit
+                </div>
+
+                <div class="profit-value">
+                    ₹<span id="accountNetProfit">0.00</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+const token =
+    localStorage.getItem("access_token");
+
+
+if (!token) {
+
+    window.location.href = "login.html";
+
+}
+
+
+function authHeaders() {
+
+    return {
+        "Authorization": `Bearer ${token}`
+    };
+
+}
+
+
+function showStatus(message, type) {
+
+    const status =
+        document.getElementById("status");
+
+    status.textContent = message;
+
+    status.className =
+        `status ${type}`;
+
+}
+
+
+function money(value) {
+
+    return Number(value || 0)
+        .toFixed(2);
+
+}
+
+
+async function loadReport() {
+
+    try {
+
+        showStatus(
+            "Loading report...",
+            "success"
+        );
+
+
+        const response =
+            await fetch(
+                `${API_URL}/reports/summary`,
+                {
+                    headers: authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load report."
+            );
+
+        }
+
+
+        console.log(
+            "REPORT DATA:",
+            data
+        );
+
+
+        /*
+         * Main financial figures
+         */
+
+        document.getElementById("totalSales")
+            .textContent =
+            money(data.total_sales);
+
+
+        document.getElementById("totalPurchases")
+            .textContent =
+            money(data.total_purchases);
+
+
+        document.getElementById("totalExpenses")
+            .textContent =
+            money(data.total_expenses);
+
+
+        document.getElementById("netProfit")
+            .textContent =
+            money(data.net_profit);
+
+
+        /*
+         * Profit section
+         */
+
+        document.getElementById("salesRevenue")
+            .textContent =
+            money(data.total_sales);
+
+
+        document.getElementById("grossProfit")
+            .textContent =
+            money(data.gross_profit);
+
+
+        document.getElementById("netProfit2")
+            .textContent =
+            money(data.net_profit);
+
+
+        /*
+         * Inventory
+         */
+
+        document.getElementById("totalProducts")
+            .textContent =
+            Number(
+                data.total_products || 0
+            );
+
+
+        document.getElementById("totalStockUnits")
+            .textContent =
+            Number(
+                data.total_stock_units || 0
+            );
+
+
+        /*
+         * Inventory value
+         *
+         * The current backend summary
+         * does not provide inventory value,
+         * so this is calculated as:
+         *
+         * stock units × average/current cost
+         *
+         * We load products separately.
+         */
+
+        await loadInventoryValue();
+
+
+        /*
+         * Accounting section
+         */
+
+        document.getElementById("accountGrossProfit")
+            .textContent =
+            money(data.gross_profit);
+
+
+        document.getElementById("accountExpenses")
+            .textContent =
+            money(data.total_expenses);
+
+
+        document.getElementById("accountNetProfit")
+            .textContent =
+            money(data.net_profit);
+
+
+        showStatus(
+            "Report updated successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showStatus(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+async function loadInventoryValue() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/products/`,
+                {
+                    headers: authHeaders()
+                }
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const products =
+            await response.json();
+
+
+        let value = 0;
+
+
+        products.forEach(product => {
+
+            const stock =
+                Number(product.stock || 0);
+
+
+            const cost =
+                Number(product.cost || 0);
+
+
+            value +=
+                stock * cost;
+
+        });
+
+
+        document.getElementById(
+            "inventoryValue"
+        ).textContent =
+            money(value);
+
+
+    } catch (error) {
+
+        console.error(
+            "Inventory value error:",
+            error
+        );
+
+    }
+
+}
+
+
+loadReport();
+
+</script>
+
+</body>
+</html>

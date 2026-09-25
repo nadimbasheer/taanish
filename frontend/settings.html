@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #111827;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .section {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .section h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .save-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .info {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 11px 8px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .role {
+            display: inline-block;
+            padding: 5px 8px;
+            border-radius: 5px;
+            background: #e5e7eb;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .active {
+            color: #166534;
+            font-weight: bold;
+        }
+
+        .inactive {
+            color: #991b1b;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Settings</h1>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='index.html'">
+        Dashboard
+    </button>
+
+</div>
+
+
+<div class="container">
+
+    <!-- SHOP SETTINGS -->
+
+    <div class="section">
+
+        <h2>Shop Settings</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Shop Name</label>
+
+                <input
+                    type="text"
+                    id="shopName"
+                    placeholder="Your Shop Name">
+            </div>
+
+
+            <div>
+                <label>Phone</label>
+
+                <input
+                    type="text"
+                    id="shopPhone"
+                    placeholder="Shop phone number">
+            </div>
+
+
+            <div>
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    id="shopEmail"
+                    placeholder="Shop email">
+            </div>
+
+
+            <div>
+                <label>Currency</label>
+
+                <input
+                    type="text"
+                    id="currency"
+                    value="INR">
+            </div>
+
+
+            <div class="full">
+                <label>Address</label>
+
+                <textarea
+                    id="shopAddress"
+                    placeholder="Shop address"></textarea>
+            </div>
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="saveShopSettings()">
+            Save Shop Settings
+        </button>
+
+
+        <div
+            id="settingsMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- USER MANAGEMENT -->
+
+    <div
+        class="section"
+        id="userManagement">
+
+        <h2>User Management</h2>
+
+        <div class="info">
+
+            Only an <strong>Admin</strong> can create
+            shop user accounts.
+
+            Available roles:
+            <strong>Admin</strong> and
+            <strong>Cashier</strong>.
+
+        </div>
+
+
+        <div class="form-grid">
+
+            <div>
+
+                <label>Username *</label>
+
+                <input
+                    type="text"
+                    id="username"
+                    placeholder="Cashier username">
+
+            </div>
+
+
+            <div>
+
+                <label>Email</label>
+
+                <input
+                    type="email"
+                    id="userEmail"
+                    placeholder="Optional email">
+
+            </div>
+
+
+            <div>
+
+                <label>Password *</label>
+
+                <input
+                    type="password"
+                    id="userPassword"
+                    placeholder="Minimum 8 characters">
+
+            </div>
+
+
+            <div>
+
+                <label>Role</label>
+
+                <select id="userRole">
+
+                    <option value="cashier">
+                        Cashier
+                    </option>
+
+                    <option value="admin">
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="createUser()">
+
+            Create User
+
+        </button>
+
+
+        <div
+            id="userMessage"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- USERS LIST -->
+
+    <div
+        class="section"
+        id="usersListSection">
+
+        <h2>Shop Users</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Username</th>
+
+                        <th>Email</th>
+
+                        <th>Role</th>
+
+                        <th>Status</th>
+
+                        <th>Created</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="usersTable">
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="empty">
+
+                            Loading...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+const token =
+    localStorage.getItem(
+        "access_token"
+    );
+
+
+if (!token) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+let currentUser = null;
+
+
+/* =========================
+   AUTH HEADERS
+========================= */
+
+function authHeaders() {
+
+    return {
+
+        "Authorization":
+            `Bearer ${token}`,
+
+        "Content-Type":
+            "application/json"
+
+    };
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+    elementId,
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById(
+            elementId
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.className =
+        `message ${type}`;
+
+}
+
+
+/* =========================
+   CURRENT USER
+========================= */
+
+async function loadCurrentUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/auth/me`,
+                {
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Could not load current user."
+            );
+
+        }
+
+
+        currentUser =
+            await response.json();
+
+
+        /*
+         * Only Admin can see
+         * User Management.
+         */
+
+        if (
+            currentUser.role !==
+            "admin"
+        ) {
+
+            document.getElementById(
+                "userManagement"
+            ).classList.add(
+                "hidden"
+            );
+
+
+            document.getElementById(
+                "usersListSection"
+            ).classList.add(
+                "hidden"
+            );
+
+        } else {
+
+            await loadUsers();
+
+        }
+
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+}
+
+
+/* =========================
+   SHOP SETTINGS
+========================= */
+
+async function loadShopSettings() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/settings/`,
+                {
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const settings =
+            await response.json();
+
+
+        document.getElementById(
+            "shopName"
+        ).value =
+            settings.shop_name || "";
+
+
+        document.getElementById(
+            "shopPhone"
+        ).value =
+            settings.phone || "";
+
+
+        document.getElementById(
+            "shopEmail"
+        ).value =
+            settings.email || "";
+
+
+        document.getElementById(
+            "shopAddress"
+        ).value =
+            settings.address || "";
+
+
+        document.getElementById(
+            "currency"
+        ).value =
+            settings.currency || "INR";
+
+
+    } catch (error) {
+
+        console.error(
+            "Settings error:",
+            error
+        );
+
+    }
+
+}
+
+
+async function saveShopSettings() {
+
+    const data = {
+
+        shop_name:
+            document.getElementById(
+                "shopName"
+            ).value.trim(),
+
+        phone:
+            document.getElementById(
+                "shopPhone"
+            ).value.trim(),
+
+        email:
+            document.getElementById(
+                "shopEmail"
+            ).value.trim(),
+
+        address:
+            document.getElementById(
+                "shopAddress"
+            ).value.trim(),
+
+        currency:
+            document.getElementById(
+                "currency"
+            ).value.trim() || "INR"
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/settings/`,
+                {
+
+                    method:
+                        "PUT",
+
+                    headers:
+                        authHeaders(),
+
+                    body:
+                        JSON.stringify(data)
+
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to save settings."
+            );
+
+        }
+
+
+        showMessage(
+            "settingsMessage",
+            "Shop settings saved successfully.",
+            "success"
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "settingsMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   CREATE USER
+========================= */
+
+async function createUser() {
+
+    const username =
+        document.getElementById(
+            "username"
+        ).value.trim();
+
+
+    const email =
+        document.getElementById(
+            "userEmail"
+        ).value.trim();
+
+
+    const password =
+        document.getElementById(
+            "userPassword"
+        ).value;
+
+
+    const role =
+        document.getElementById(
+            "userRole"
+        ).value;
+
+
+    if (!username) {
+
+        showMessage(
+            "userMessage",
+            "Username is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!password) {
+
+        showMessage(
+            "userMessage",
+            "Password is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (password.length < 8) {
+
+        showMessage(
+            "userMessage",
+            "Password must be at least 8 characters.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const userData = {
+
+        username:
+            username,
+
+        email:
+            email || null,
+
+        password:
+            password,
+
+        role:
+            role
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/users/`,
+                {
+
+                    method:
+                        "POST",
+
+                    headers:
+                        authHeaders(),
+
+                    body:
+                        JSON.stringify(
+                            userData
+                        )
+
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to create user."
+            );
+
+        }
+
+
+        showMessage(
+            "userMessage",
+            `User "${result.username}" created successfully.`,
+            "success"
+        );
+
+
+        document.getElementById(
+            "username"
+        ).value = "";
+
+
+        document.getElementById(
+            "userEmail"
+        ).value = "";
+
+
+        document.getElementById(
+            "userPassword"
+        ).value = "";
+
+
+        document.getElementById(
+            "userRole"
+        ).value =
+            "cashier";
+
+
+        await loadUsers();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "userMessage",
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   LOAD USERS
+========================= */
+
+async function loadUsers() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/users/`,
+                {
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to load users."
+            );
+
+        }
+
+
+        const users =
+            await response.json();
+
+
+        const table =
+            document.getElementById(
+                "usersTable"
+            );
+
+
+        table.innerHTML = "";
+
+
+        if (!users.length) {
+
+            table.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        class="empty">
+
+                        No users found.
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        users.forEach(
+            user => {
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                const created =
+                    user.created_at
+                        ? new Date(
+                            user.created_at
+                        ).toLocaleString(
+                            "en-IN"
+                        )
+                        : "-";
+
+
+                const statusClass =
+                    user.is_active
+                        ? "active"
+                        : "inactive";
+
+
+                const statusText =
+                    user.is_active
+                        ? "Active"
+                        : "Inactive";
+
+
+                row.innerHTML = `
+
+                    <td>
+                        ${user.id}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            user.username
+                        )}
+                    </td>
+
+                    <td>
+                        ${
+                            escapeHtml(
+                                user.email || "-"
+                            )
+                        }
+                    </td>
+
+                    <td>
+
+                        <span class="role">
+
+                            ${escapeHtml(
+                                user.role
+                            )}
+
+                        </span>
+
+                    </td>
+
+                    <td
+                        class="${statusClass}">
+
+                        ${statusText}
+
+                    </td>
+
+                    <td>
+                        ${created}
+                    </td>
+
+                `;
+
+
+                table.appendChild(
+                    row
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "usersTable"
+        ).innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    class="empty">
+
+                    Could not load users.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.textContent =
+        value;
+
+
+    return div.innerHTML;
+
+}
+
+
+/* =========================
+   START
+========================= */
+
+loadShopSettings();
+
+loadCurrentUser();
+
+</script>
+
+</body>
+</html>

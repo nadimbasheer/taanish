@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Fancy Shop Management System</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6f8;
+            color: #1f2937;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            width: 245px;
+
+            background: #111827;
+            color: white;
+
+            overflow-y: auto;
+        }
+
+        .brand {
+            padding: 25px 20px;
+
+            border-bottom: 1px solid #374151;
+        }
+
+        .brand h2 {
+            margin: 0;
+
+            font-size: 21px;
+            letter-spacing: 1px;
+        }
+
+        .brand p {
+            margin: 6px 0 0;
+
+            color: #9ca3af;
+
+            font-size: 12px;
+        }
+
+        .menu {
+            padding: 14px 10px;
+        }
+
+        .menu-title {
+            padding: 12px 12px 7px;
+
+            color: #6b7280;
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .menu a {
+            display: block;
+
+            padding: 11px 13px;
+
+            margin: 3px 0;
+
+            border-radius: 7px;
+
+            text-decoration: none;
+
+            color: #d1d5db;
+
+            font-size: 14px;
+        }
+
+        .menu a:hover {
+            background: #1f2937;
+            color: white;
+        }
+
+        .menu a.active {
+            background: #374151;
+            color: white;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 245px;
+
+            min-height: 100vh;
+        }
+
+
+        /* =========================
+           TOP BAR
+        ========================= */
+
+        .topbar {
+            min-height: 72px;
+
+            background: white;
+
+            border-bottom: 1px solid #e5e7eb;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 0 28px;
+        }
+
+        .topbar h1 {
+            margin: 0;
+
+            font-size: 22px;
+        }
+
+        .user-area {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .user-role {
+            margin-top: 3px;
+
+            color: #6b7280;
+
+            font-size: 12px;
+        }
+
+        .logout-btn {
+            border: none;
+
+            background: #ef4444;
+
+            color: white;
+
+            padding: 9px 14px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+
+        /* =========================
+           CONTENT
+        ========================= */
+
+        .content {
+            padding: 28px;
+        }
+
+
+        /* =========================
+           WELCOME
+        ========================= */
+
+        .welcome {
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 24px;
+
+            margin-bottom: 24px;
+        }
+
+        .welcome h2 {
+            margin: 0 0 7px;
+
+            font-size: 21px;
+        }
+
+        .welcome p {
+            margin: 0;
+
+            color: #6b7280;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================
+           STATISTICS
+        ========================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            min-width: 0;
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 20px;
+        }
+
+        .stat-title {
+            color: #6b7280;
+
+            font-size: 12px;
+
+            margin-bottom: 9px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+
+            font-weight: bold;
+        }
+
+
+        /* =========================
+           SECTION TITLE
+        ========================= */
+
+        .section-title {
+            margin: 0 0 15px;
+
+            font-size: 18px;
+        }
+
+
+        /* =========================
+           MODULE GRID
+        ========================= */
+
+        .modules {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 16px;
+        }
+
+
+        /* IMPORTANT:
+           Every module is directly inside
+           the grid. No wrapper elements.
+        */
+
+        .module {
+            display: block;
+
+            min-width: 0;
+
+            min-height: 130px;
+
+            background: white;
+
+            border: 1px solid #e5e7eb;
+
+            border-radius: 12px;
+
+            padding: 20px;
+
+            text-decoration: none;
+
+            color: #111827;
+
+            transition:
+                transform 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .module:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 6px 18px rgba(0,0,0,0.07);
+        }
+
+        .module-icon {
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            margin-bottom: 12px;
+
+            font-size: 25px;
+        }
+
+        .module h3 {
+            margin: 0 0 6px;
+
+            font-size: 15px;
+        }
+
+        .module p {
+            margin: 0;
+
+            color: #6b7280;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           QUICK ACTIONS
+        ========================= */
+
+        .quick-section {
+            margin-top: 30px;
+        }
+
+        .quick-actions {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 10px;
+        }
+
+        .quick-actions a {
+            display: inline-block;
+
+            padding: 10px 15px;
+
+            border-radius: 7px;
+
+            background: #111827;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 13px;
+        }
+
+        .quick-actions a:hover {
+            background: #374151;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 1200px) {
+
+            .modules {
+                grid-template-columns:
+                    repeat(3, minmax(0, 1fr));
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .modules {
+                grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                padding: 15px;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
+            .user-area {
+                align-items: flex-end;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .modules {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome {
+                padding: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     SIDEBAR
+===================================================== -->
+
+<aside class="sidebar">
+
+
+    <div class="brand">
+
+        <h2>
+            FANCY SHOP
+        </h2>
+
+        <p>
+            Management System
+        </p>
+
+    </div>
+
+
+    <nav class="menu">
+
+
+        <div class="menu-title">
+            Main
+        </div>
+
+
+        <a
+            href="index.html"
+            class="active"
+        >
+            🏠 Dashboard
+        </a>
+
+
+        <div class="menu-title">
+            Sales
+        </div>
+
+
+        <a href="sales.html">
+            🛒 Sales / Billing
+        </a>
+
+
+        <a href="sales-history.html">
+            🧾 Sales History
+        </a>
+
+
+        <a href="returns.html">
+            ↩️ Returns
+        </a>
+
+
+        <!-- ADMIN SECTION -->
+
+        <div class="admin-only">
+
+
+            <div class="menu-title">
+                Products & Stock
+            </div>
+
+
+            <a href="products.html">
+                📦 Products
+            </a>
+
+
+            <a href="inventory.html">
+                📊 Inventory
+            </a>
+
+
+            <a href="purchases.html">
+                🚚 Purchases
+            </a>
+
+
+            <div class="menu-title">
+                Management
+            </div>
+
+
+            <a href="suppliers.html">
+                🏢 Suppliers
+            </a>
+
+
+            <a href="customers.html">
+                👥 Customers
+            </a>
+
+
+            <a href="expenses.html">
+                💰 Expenses
+            </a>
+
+
+            <a href="reports.html">
+                📈 Reports
+            </a>
+
+
+            <a href="settings.html">
+                ⚙️ Settings
+            </a>
+
+
+        </div>
+
+
+    </nav>
+
+</aside>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="main">
+
+
+    <!-- TOP BAR -->
+
+    <header class="topbar">
+
+
+        <h1>
+            Dashboard
+        </h1>
+
+
+        <div class="user-area">
+
+
+            <div class="user-info">
+
+                <div
+                    class="user-name"
+                    id="username"
+                >
+                    User
+                </div>
+
+
+                <div
+                    class="user-role"
+                    id="userRole"
+                >
+                    Loading...
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+
+        </div>
+
+
+    </header>
+
+
+
+    <!-- CONTENT -->
+
+    <section class="content">
+
+
+        <!-- WELCOME -->
+
+        <div class="welcome">
+
+            <h2>
+                Welcome to your shop
+            </h2>
+
+            <p>
+                Manage sales, stock, products and daily shop operations from one place.
+            </p>
+
+        </div>
+
+
+
+        <!-- DASHBOARD STATS -->
+
+        <div
+            class="stats admin-dashboard-only"
+        >
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Total Sales
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalSales"
+                >
+                    ₹0.00
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Total Products
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalProducts"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Stock Units
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalStock"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-title">
+                    Net Profit
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="netProfit"
+                >
+                    ₹0.00
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- MODULES -->
+
+        <h2 class="section-title">
+            Modules
+        </h2>
+
+
+        <div class="modules">
+
+
+            <!-- 1 -->
+
+            <a
+                href="sales.html"
+                class="module"
+            >
+
+                <div class="module-icon">
+                    🛒
+                </div>
+
+                <h3>
+                    Sales / Billing
+                </h3>
+
+                <p>
+                    Create sales, scan products and generate invoices.
+                </p>
+
+            </a>
+
+
+            <!-- 2 -->
+
+            <a
+                href="sales-history.html"
+                class="module"
+            >
+
+                <div class="module-icon">
+                    🧾
+                </div>
+
+                <h3>
+                    Sales History
+                </h3>
+
+                <p>
+                    View previous invoices and reprint receipts.
+                </p>
+
+            </a>
+
+
+            <!-- 3 -->
+
+            <a
+                href="customers.html"
+                class="module"
+            >
+
+                <div class="module-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Customers
+                </h3>
+
+                <p>
+                    Manage customer information.
+                </p>
+
+            </a>
+
+
+            <!-- 4 -->
+
+            <a
+                href="returns.html"
+                class="module"
+            >
+
+                <div class="module-icon">
+                    ↩️
+                </div>
+
+                <h3>
+                    Returns
+                </h3>
+
+                <p>
+                    Process returned products and update stock.
+                </p>
+
+            </a>
+
+
+            <!-- 5 ADMIN -->
+
+            <a
+                href="products.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    📦
+                </div>
+
+                <h3>
+                    Products
+                </h3>
+
+                <p>
+                    Add and manage shop products.
+                </p>
+
+            </a>
+
+
+            <!-- 6 ADMIN -->
+
+            <a
+                href="inventory.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    📊
+                </div>
+
+                <h3>
+                    Inventory
+                </h3>
+
+                <p>
+                    Manage stock and stock movements.
+                </p>
+
+            </a>
+
+
+            <!-- 7 ADMIN -->
+
+            <a
+                href="purchases.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    🚚
+                </div>
+
+                <h3>
+                    Purchases
+                </h3>
+
+                <p>
+                    Record supplier purchases and incoming stock.
+                </p>
+
+            </a>
+
+
+            <!-- 8 ADMIN -->
+
+            <a
+                href="suppliers.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    🏢
+                </div>
+
+                <h3>
+                    Suppliers
+                </h3>
+
+                <p>
+                    Manage supplier information.
+                </p>
+
+            </a>
+
+
+            <!-- 9 ADMIN -->
+
+            <a
+                href="expenses.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    💰
+                </div>
+
+                <h3>
+                    Expenses
+                </h3>
+
+                <p>
+                    Record shop expenses and payments.
+                </p>
+
+            </a>
+
+
+            <!-- 10 ADMIN -->
+
+            <a
+                href="reports.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    📈
+                </div>
+
+                <h3>
+                    Reports
+                </h3>
+
+                <p>
+                    View sales, purchase, profit and expense reports.
+                </p>
+
+            </a>
+
+
+            <!-- 11 ADMIN -->
+
+            <a
+                href="settings.html"
+                class="module admin-only"
+            >
+
+                <div class="module-icon">
+                    ⚙️
+                </div>
+
+                <h3>
+                    Settings
+                </h3>
+
+                <p>
+                    Configure shop settings.
+                </p>
+
+            </a>
+
+
+        </div>
+
+
+
+        <!-- QUICK ACTIONS -->
+
+        <div class="quick-section">
+
+
+            <h2 class="section-title">
+                Quick Actions
+            </h2>
+
+
+            <div class="quick-actions">
+
+
+                <a href="sales.html">
+                    + New Sale
+                </a>
+
+
+                <a href="sales-history.html">
+                    🧾 Sales History
+                </a>
+
+
+                <a href="returns.html">
+                    ↩ Process Return
+                </a>
+
+
+                <a
+                    href="inventory.html"
+                    class="admin-only"
+                >
+                    + Stock Entry
+                </a>
+
+
+                <a
+                    href="purchases.html"
+                    class="admin-only"
+                >
+                    + Purchase
+                </a>
+
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<script>
+
+/* =====================================================
+   CONFIG
+===================================================== */
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+const token =
+    localStorage.getItem(
+        "access_token"
+    );
+
+
+/* =====================================================
+   LOGIN CHECK
+===================================================== */
+
+if (!token) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =====================================================
+   AUTH HEADERS
+===================================================== */
+
+function getAuthHeaders() {
+
+    return {
+
+        "Authorization":
+            "Bearer " + token
+
+    };
+
+}
+
+
+/* =====================================================
+   CHECK AUTH
+===================================================== */
+
+function handleUnauthorized(
+    response
+) {
+
+    if (
+        response.status === 401
+    ) {
+
+        localStorage.removeItem(
+            "access_token"
+        );
+
+        window.location.href =
+            "login.html";
+
+        return true;
+
+    }
+
+    return false;
+
+}
+
+
+/* =====================================================
+   LOAD CURRENT USER
+===================================================== */
+
+async function loadCurrentUser() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/auth/me",
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            handleUnauthorized(
+                response
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load user"
+            );
+
+        }
+
+
+        const user =
+            await response.json();
+
+
+        document.getElementById(
+            "username"
+        ).textContent =
+            user.username ||
+            "User";
+
+
+        document.getElementById(
+            "userRole"
+        ).textContent =
+            user.role ||
+            "cashier";
+
+
+        setupRoleVisibility(
+            user.role
+        );
+
+
+        if (
+            user.role === "admin"
+        ) {
+
+            loadDashboardSummary();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "User error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   ROLE VISIBILITY
+===================================================== */
+
+function setupRoleVisibility(
+    role
+) {
+
+    const adminElements =
+        document.querySelectorAll(
+            ".admin-only"
+        );
+
+
+    const dashboardElements =
+        document.querySelectorAll(
+            ".admin-dashboard-only"
+        );
+
+
+    if (
+        role === "admin"
+    ) {
+
+        adminElements.forEach(
+            function(element) {
+
+                element.style.display =
+                    "";
+
+            }
+        );
+
+
+        dashboardElements.forEach(
+            function(element) {
+
+                element.style.display =
+                    "";
+
+            }
+        );
+
+    }
+
+    else {
+
+        adminElements.forEach(
+            function(element) {
+
+                element.style.display =
+                    "none";
+
+            }
+        );
+
+
+        dashboardElements.forEach(
+            function(element) {
+
+                element.style.display =
+                    "none";
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD DASHBOARD SUMMARY
+===================================================== */
+
+async function loadDashboardSummary() {
+
+    try {
+
+        const response =
+            await fetch(
+                API_URL +
+                "/reports/summary",
+                {
+                    method: "GET",
+
+                    headers:
+                        getAuthHeaders()
+                }
+            );
+
+
+        if (
+            handleUnauthorized(
+                response
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load summary"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        document.getElementById(
+            "totalSales"
+        ).textContent =
+            formatCurrency(
+                data.total_sales
+            );
+
+
+        document.getElementById(
+            "totalProducts"
+        ).textContent =
+            data.total_products ||
+            0;
+
+
+        document.getElementById(
+            "totalStock"
+        ).textContent =
+            data.total_stock_units ||
+            0;
+
+
+        document.getElementById(
+            "netProfit"
+        ).textContent =
+            formatCurrency(
+                data.net_profit
+            );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Dashboard summary error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FORMAT CURRENCY
+===================================================== */
+
+function formatCurrency(
+    value
+) {
+
+    return (
+        "₹" +
+        Number(
+            value || 0
+        ).toFixed(2)
+    );
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+function logout() {
+
+    localStorage.removeItem(
+        "access_token"
+    );
+
+
+    localStorage.removeItem(
+        "last_invoice_number"
+    );
+
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadCurrentUser();
+
+</script>
+
+
+</body>
+
+</html>

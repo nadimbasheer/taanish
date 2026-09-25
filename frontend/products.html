@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #111827;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .barcode-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .barcode-row input {
+            flex: 1;
+        }
+
+        .generate-btn {
+            white-space: nowrap;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #374151;
+            color: white;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            margin-top: 18px;
+            width: 100%;
+            padding: 12px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            margin-top: 8px;
+            width: 100%;
+            padding: 10px;
+            background: #e5e7eb;
+            color: #111827;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .barcode {
+            font-family: monospace;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .stock-low {
+            font-weight: bold;
+        }
+
+        .actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .edit-btn,
+        .delete-btn {
+            border: none;
+            padding: 7px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background: #e5e7eb;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            table {
+                min-width: 900px;
+            }
+
+            .table-wrapper {
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Products</h1>
+
+    <button
+        class="back-btn"
+        onclick="window.location.href='index.html'">
+        Dashboard
+    </button>
+
+</div>
+
+
+<div class="container">
+
+    <!-- PRODUCT FORM -->
+
+    <div class="card">
+
+        <h2 id="formTitle">Add Product</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Product Name *</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Example: Test Ring">
+            </div>
+
+
+            <div>
+                <label>Category</label>
+
+                <input
+                    type="text"
+                    id="category"
+                    placeholder="Jewellery">
+            </div>
+
+
+            <div>
+                <label>SKU</label>
+
+                <input
+                    type="text"
+                    id="sku"
+                    placeholder="Optional SKU">
+            </div>
+
+
+            <div>
+                <label>Barcode</label>
+
+                <div class="barcode-row">
+
+                    <input
+                        type="text"
+                        id="barcode"
+                        placeholder="FS000001">
+
+                    <button
+                        type="button"
+                        class="generate-btn"
+                        onclick="generateBarcode()">
+                        Generate
+                    </button>
+
+                </div>
+            </div>
+
+
+            <div>
+                <label>Cost Price *</label>
+
+                <input
+                    type="number"
+                    id="cost"
+                    min="0"
+                    step="0.01"
+                    value="0">
+            </div>
+
+
+            <div>
+                <label>MRP *</label>
+
+                <input
+                    type="number"
+                    id="mrp"
+                    min="0"
+                    step="0.01"
+                    value="0">
+            </div>
+
+
+            <div>
+                <label>Selling Price *</label>
+
+                <input
+                    type="number"
+                    id="selling"
+                    min="0"
+                    step="0.01"
+                    value="0">
+            </div>
+
+
+            <div>
+                <label>Opening Stock</label>
+
+                <input
+                    type="number"
+                    id="stock"
+                    min="0"
+                    value="0">
+            </div>
+
+
+            <div>
+                <label>Minimum Stock Alert</label>
+
+                <input
+                    type="number"
+                    id="minStock"
+                    min="0"
+                    value="0">
+            </div>
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="saveProduct()"
+            id="saveButton">
+            Save Product
+        </button>
+
+
+        <button
+            class="cancel-btn"
+            onclick="cancelEdit()"
+            id="cancelButton">
+            Cancel Edit
+        </button>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+    </div>
+
+
+    <!-- PRODUCT LIST -->
+
+    <div class="card">
+
+        <h2>Product List</h2>
+
+        <div class="search-box">
+
+            <input
+                type="text"
+                id="search"
+                placeholder="Search product, SKU or barcode..."
+                oninput="displayProducts()">
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>SKU</th>
+                        <th>Barcode</th>
+                        <th>Cost</th>
+                        <th>MRP</th>
+                        <th>Selling</th>
+                        <th>Stock</th>
+                        <th>Min Stock</th>
+                        <th>Actions</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="productTable">
+
+                    <tr>
+                        <td colspan="11" class="empty">
+                            Loading...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+const token =
+    localStorage.getItem("access_token");
+
+
+if (!token) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+let products = [];
+
+let editingProductId = null;
+
+
+function authHeaders() {
+
+    return {
+        "Authorization":
+            `Bearer ${token}`,
+        "Content-Type":
+            "application/json"
+    };
+
+}
+
+
+function showMessage(message, type) {
+
+    const box =
+        document.getElementById("message");
+
+    box.textContent = message;
+
+    box.className =
+        `message ${type}`;
+
+}
+
+
+function clearMessage() {
+
+    const box =
+        document.getElementById("message");
+
+    box.textContent = "";
+
+    box.className = "message";
+
+}
+
+
+function generateBarcode() {
+
+    /*
+     * Find the highest FS number currently
+     * used by products.
+     */
+
+    let highest = 0;
+
+
+    products.forEach(product => {
+
+        const code =
+            String(product.barcode || "");
+
+
+        const match =
+            code.match(/^FS(\d+)$/i);
+
+
+        if (match) {
+
+            const number =
+                Number(match[1]);
+
+
+            if (number > highest) {
+
+                highest = number;
+
+            }
+
+        }
+
+    });
+
+
+    const nextNumber =
+        highest + 1;
+
+
+    const newBarcode =
+        "FS" +
+        String(nextNumber)
+            .padStart(6, "0");
+
+
+    document.getElementById("barcode")
+        .value =
+        newBarcode;
+
+}
+
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/products/`,
+                {
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Failed to load products."
+            );
+
+        }
+
+
+        products =
+            await response.json();
+
+
+        displayProducts();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function displayProducts() {
+
+    const table =
+        document.getElementById(
+            "productTable"
+        );
+
+
+    const search =
+        document.getElementById(
+            "search"
+        ).value
+        .trim()
+        .toLowerCase();
+
+
+    const filtered =
+        products.filter(product => {
+
+            return (
+
+                String(product.name || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(product.sku || "")
+                    .toLowerCase()
+                    .includes(search)
+
+                ||
+
+                String(product.barcode || "")
+                    .toLowerCase()
+                    .includes(search)
+
+            );
+
+        });
+
+
+    table.innerHTML = "";
+
+
+    if (!filtered.length) {
+
+        table.innerHTML = `
+            <tr>
+                <td
+                    colspan="11"
+                    class="empty">
+                    No products found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    filtered.forEach(product => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const stock =
+            Number(product.stock || 0);
+
+
+        const minStock =
+            Number(product.min_stock || 0);
+
+
+        const stockClass =
+            stock <= minStock
+                ? "stock-low"
+                : "";
+
+
+        row.innerHTML = `
+
+            <td>${product.id}</td>
+
+            <td>${escapeHtml(
+                product.name
+            )}</td>
+
+            <td>${escapeHtml(
+                product.category || "-"
+            )}</td>
+
+            <td>${escapeHtml(
+                product.sku || "-"
+            )}</td>
+
+            <td class="barcode">
+                ${escapeHtml(
+                    product.barcode || "-"
+                )}
+            </td>
+
+            <td>
+                ₹${Number(
+                    product.cost || 0
+                ).toFixed(2)}
+            </td>
+
+            <td>
+                ₹${Number(
+                    product.mrp || 0
+                ).toFixed(2)}
+            </td>
+
+            <td>
+                ₹${Number(
+                    product.selling || 0
+                ).toFixed(2)}
+            </td>
+
+            <td class="${stockClass}">
+                ${stock}
+            </td>
+
+            <td>
+                ${minStock}
+            </td>
+
+            <td>
+
+                <div class="actions">
+
+                    <button
+                        class="edit-btn"
+                        onclick="editProduct(${product.id})">
+                        Edit
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteProduct(${product.id})">
+                        Delete
+                    </button>
+
+                </div>
+
+            </td>
+
+        `;
+
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+function escapeHtml(value) {
+
+    const div =
+        document.createElement("div");
+
+    div.textContent =
+        value;
+
+    return div.innerHTML;
+
+}
+
+
+async function saveProduct() {
+
+    clearMessage();
+
+
+    const name =
+        document.getElementById("name")
+            .value.trim();
+
+
+    const category =
+        document.getElementById("category")
+            .value.trim();
+
+
+    const skuValue =
+        document.getElementById("sku")
+            .value.trim();
+
+
+    const barcodeValue =
+        document.getElementById("barcode")
+            .value.trim();
+
+
+    const cost =
+        Number(
+            document.getElementById("cost")
+                .value
+        );
+
+
+    const mrp =
+        Number(
+            document.getElementById("mrp")
+                .value
+        );
+
+
+    const selling =
+        Number(
+            document.getElementById("selling")
+                .value
+        );
+
+
+    const stock =
+        Number(
+            document.getElementById("stock")
+                .value
+        );
+
+
+    const minStock =
+        Number(
+            document.getElementById("minStock")
+                .value
+        );
+
+
+    if (!name) {
+
+        showMessage(
+            "Product name is required.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        isNaN(cost) ||
+        cost < 0 ||
+        isNaN(mrp) ||
+        mrp < 0 ||
+        isNaN(selling) ||
+        selling < 0
+    ) {
+
+        showMessage(
+            "Enter valid prices.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (
+        isNaN(stock) ||
+        stock < 0 ||
+        isNaN(minStock) ||
+        minStock < 0
+    ) {
+
+        showMessage(
+            "Enter valid stock values.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const productData = {
+
+        name: name,
+
+        category:
+            category || null,
+
+        sku:
+            skuValue || null,
+
+        barcode:
+            barcodeValue || null,
+
+        cost: cost,
+
+        mrp: mrp,
+
+        selling: selling,
+
+        stock: stock,
+
+        min_stock: minStock
+
+    };
+
+
+    try {
+
+        let response;
+
+
+        if (editingProductId) {
+
+            response =
+                await fetch(
+                    `${API_URL}/products/${editingProductId}`,
+                    {
+                        method: "PUT",
+                        headers:
+                            authHeaders(),
+                        body:
+                            JSON.stringify(
+                                productData
+                            )
+                    }
+                );
+
+        } else {
+
+            response =
+                await fetch(
+                    `${API_URL}/products/`,
+                    {
+                        method: "POST",
+                        headers:
+                            authHeaders(),
+                        body:
+                            JSON.stringify(
+                                productData
+                            )
+                    }
+                );
+
+        }
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to save product."
+            );
+
+        }
+
+
+        showMessage(
+            editingProductId
+                ? "Product updated successfully."
+                : "Product saved successfully.",
+            "success"
+        );
+
+
+        clearForm();
+
+
+        await loadProducts();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function editProduct(id) {
+
+    const product =
+        products.find(
+            item => item.id === id
+        );
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    editingProductId =
+        product.id;
+
+
+    document.getElementById("formTitle")
+        .textContent =
+        "Edit Product";
+
+
+    document.getElementById("name")
+        .value =
+        product.name || "";
+
+
+    document.getElementById("category")
+        .value =
+        product.category || "";
+
+
+    document.getElementById("sku")
+        .value =
+        product.sku || "";
+
+
+    document.getElementById("barcode")
+        .value =
+        product.barcode || "";
+
+
+    document.getElementById("cost")
+        .value =
+        product.cost || 0;
+
+
+    document.getElementById("mrp")
+        .value =
+        product.mrp || 0;
+
+
+    document.getElementById("selling")
+        .value =
+        product.selling || 0;
+
+
+    document.getElementById("stock")
+        .value =
+        product.stock || 0;
+
+
+    document.getElementById("minStock")
+        .value =
+        product.min_stock || 0;
+
+
+    document.getElementById("saveButton")
+        .textContent =
+        "Update Product";
+
+
+    document.getElementById("cancelButton")
+        .style.display =
+        "block";
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+function cancelEdit() {
+
+    clearForm();
+
+}
+
+
+function clearForm() {
+
+    editingProductId =
+        null;
+
+
+    document.getElementById("formTitle")
+        .textContent =
+        "Add Product";
+
+
+    document.getElementById("name")
+        .value = "";
+
+
+    document.getElementById("category")
+        .value = "";
+
+
+    document.getElementById("sku")
+        .value = "";
+
+
+    document.getElementById("barcode")
+        .value = "";
+
+
+    document.getElementById("cost")
+        .value = 0;
+
+
+    document.getElementById("mrp")
+        .value = 0;
+
+
+    document.getElementById("selling")
+        .value = 0;
+
+
+    document.getElementById("stock")
+        .value = 0;
+
+
+    document.getElementById("minStock")
+        .value = 0;
+
+
+    document.getElementById("saveButton")
+        .textContent =
+        "Save Product";
+
+
+    document.getElementById("cancelButton")
+        .style.display =
+        "none";
+
+}
+
+
+async function deleteProduct(id) {
+
+    const product =
+        products.find(
+            item => item.id === id
+        );
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Delete "${product.name}"?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/products/${id}`,
+                {
+                    method: "DELETE",
+                    headers:
+                        authHeaders()
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to delete product."
+            );
+
+        }
+
+
+        showMessage(
+            "Product deleted successfully.",
+            "success"
+        );
+
+
+        await loadProducts();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+loadProducts();
+
+</script>
+
+</body>
+</html>

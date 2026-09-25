@@ -1,0 +1,1 @@
+console.log("Fancy Shop System loaded successfully.");

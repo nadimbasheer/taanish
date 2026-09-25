@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchases</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f6f8;
+            color: #222;
+        }
+
+        .header {
+            background: #111827;
+            color: white;
+            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #111827;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .total-box {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 7px;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .save-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 12px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 11px 8px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Purchase / Stock Entry</h1>
+
+    <button class="back-btn" onclick="window.location.href='index.html'">
+        Dashboard
+    </button>
+</div>
+
+
+<div class="container">
+
+    <!-- PURCHASE FORM -->
+
+    <div class="card">
+
+        <h2>New Purchase</h2>
+
+        <div class="form-grid">
+
+            <div>
+                <label>Product</label>
+
+                <select id="productSelect">
+                    <option value="">Select Product</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label>Supplier</label>
+
+                <select id="supplierSelect">
+                    <option value="">Select Supplier</option>
+                </select>
+            </div>
+
+
+            <div>
+                <label>Quantity</label>
+
+                <input
+                    type="number"
+                    id="quantity"
+                    min="1"
+                    value="1"
+                >
+            </div>
+
+
+            <div>
+                <label>Cost Price / Unit</label>
+
+                <input
+                    type="number"
+                    id="costPrice"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                >
+            </div>
+
+
+            <div>
+                <label>Invoice Number</label>
+
+                <input
+                    type="text"
+                    id="invoiceNumber"
+                    placeholder="Supplier invoice number"
+                >
+            </div>
+
+
+            <div>
+                <label>Note</label>
+
+                <input
+                    type="text"
+                    id="note"
+                    placeholder="Optional note"
+                >
+            </div>
+
+        </div>
+
+
+        <div class="total-box">
+            Purchase Total:
+            ₹<span id="purchaseTotal">0.00</span>
+        </div>
+
+
+        <button class="save-btn" onclick="savePurchase()">
+            Save Purchase
+        </button>
+
+
+        <div id="message" class="message"></div>
+
+    </div>
+
+
+    <!-- RECENT PURCHASES -->
+
+    <div class="card">
+
+        <h2>Recent Purchases</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Product</th>
+                    <th>Supplier</th>
+                    <th>Qty</th>
+                    <th>Cost</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="purchaseTable">
+
+                <tr>
+                    <td colspan="7" class="empty">
+                        Loading...
+                    </td>
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+const token = localStorage.getItem("access_token");
+
+
+if (!token) {
+    window.location.href = "login.html";
+}
+
+
+function getAuthHeaders() {
+
+    return {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+    };
+
+}
+
+
+function showMessage(message, type) {
+
+    const box =
+        document.getElementById("message");
+
+    box.textContent = message;
+
+    box.className =
+        `message ${type}`;
+
+}
+
+
+function calculateTotal() {
+
+    const quantity =
+        Number(
+            document.getElementById("quantity").value
+        ) || 0;
+
+
+    const cost =
+        Number(
+            document.getElementById("costPrice").value
+        ) || 0;
+
+
+    const total =
+        quantity * cost;
+
+
+    document.getElementById("purchaseTotal")
+        .textContent =
+        total.toFixed(2);
+
+}
+
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/products/`, {
+                headers: getAuthHeaders()
+            });
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+            throw new Error("Failed to load products");
+        }
+
+
+        const products =
+            await response.json();
+
+
+        const select =
+            document.getElementById("productSelect");
+
+
+        select.innerHTML =
+            `<option value="">Select Product</option>`;
+
+
+        products.forEach(product => {
+
+            const option =
+                document.createElement("option");
+
+
+            option.value = product.id;
+
+            option.textContent =
+                `${product.name} | Stock: ${product.stock}`;
+
+
+            option.dataset.cost =
+                product.cost;
+
+
+            select.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Could not load products.",
+            "error"
+        );
+
+    }
+
+}
+
+
+async function loadSuppliers() {
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/suppliers/`, {
+                headers: getAuthHeaders()
+            });
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+            throw new Error("Failed to load suppliers");
+        }
+
+
+        const suppliers =
+            await response.json();
+
+
+        const select =
+            document.getElementById("supplierSelect");
+
+
+        select.innerHTML =
+            `<option value="">Select Supplier</option>`;
+
+
+        suppliers.forEach(supplier => {
+
+            const option =
+                document.createElement("option");
+
+
+            option.value = supplier.id;
+
+            option.textContent =
+                supplier.name;
+
+            select.appendChild(option);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "Could not load suppliers.",
+            "error"
+        );
+
+    }
+
+}
+
+
+document.getElementById("productSelect")
+    .addEventListener("change", function () {
+
+        const selected =
+            this.options[this.selectedIndex];
+
+
+        if (
+            selected &&
+            selected.dataset.cost !== undefined
+        ) {
+
+            document.getElementById("costPrice")
+                .value =
+                Number(selected.dataset.cost || 0)
+                    .toFixed(2);
+
+        }
+
+
+        calculateTotal();
+
+    });
+
+
+document.getElementById("quantity")
+    .addEventListener(
+        "input",
+        calculateTotal
+    );
+
+
+document.getElementById("costPrice")
+    .addEventListener(
+        "input",
+        calculateTotal
+    );
+
+
+async function savePurchase() {
+
+    const productId =
+        Number(
+            document.getElementById("productSelect").value
+        );
+
+
+    const supplierValue =
+        document.getElementById("supplierSelect").value;
+
+
+    const supplierId =
+        supplierValue
+            ? Number(supplierValue)
+            : null;
+
+
+    const quantity =
+        Number(
+            document.getElementById("quantity").value
+        );
+
+
+    const costPrice =
+        Number(
+            document.getElementById("costPrice").value
+        );
+
+
+    const invoiceNumber =
+        document.getElementById("invoiceNumber")
+            .value.trim();
+
+
+    const note =
+        document.getElementById("note")
+            .value.trim();
+
+
+    if (!productId) {
+
+        showMessage(
+            "Please select a product.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (!quantity || quantity <= 0) {
+
+        showMessage(
+            "Quantity must be greater than 0.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (costPrice < 0 || isNaN(costPrice)) {
+
+        showMessage(
+            "Enter a valid cost price.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const purchaseData = {
+
+        product_id: productId,
+
+        supplier_id: supplierId,
+
+        quantity: quantity,
+
+        cost_price: costPrice,
+
+        invoice_number:
+            invoiceNumber || null,
+
+        note:
+            note || null
+
+    };
+
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/purchases/`, {
+
+                method: "POST",
+
+                headers: getAuthHeaders(),
+
+                body:
+                    JSON.stringify(purchaseData)
+
+            });
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Purchase failed."
+            );
+
+        }
+
+
+        showMessage(
+            `Purchase saved successfully. Total: ₹${Number(result.total).toFixed(2)}`,
+            "success"
+        );
+
+
+        // Reset form
+
+        document.getElementById("productSelect")
+            .value = "";
+
+        document.getElementById("supplierSelect")
+            .value = "";
+
+        document.getElementById("quantity")
+            .value = 1;
+
+        document.getElementById("costPrice")
+            .value = "";
+
+        document.getElementById("invoiceNumber")
+            .value = "";
+
+        document.getElementById("note")
+            .value = "";
+
+
+        calculateTotal();
+
+
+        // Reload product stock
+
+        await loadProducts();
+
+
+        // Reload purchase history
+
+        await loadPurchases();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+async function loadPurchases() {
+
+    try {
+
+        const response =
+            await fetch(`${API_URL}/purchases/`, {
+                headers: getAuthHeaders()
+            });
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+            throw new Error(
+                "Failed to load purchases"
+            );
+        }
+
+
+        const purchases =
+            await response.json();
+
+
+        const productsResponse =
+            await fetch(`${API_URL}/products/`, {
+                headers: getAuthHeaders()
+            });
+
+
+        const products =
+            await productsResponse.json();
+
+
+        const suppliersResponse =
+            await fetch(`${API_URL}/suppliers/`, {
+                headers: getAuthHeaders()
+            });
+
+
+        const suppliers =
+            await suppliersResponse.json();
+
+
+        const productMap = {};
+
+        products.forEach(product => {
+
+            productMap[product.id] =
+                product.name;
+
+        });
+
+
+        const supplierMap = {};
+
+        suppliers.forEach(supplier => {
+
+            supplierMap[supplier.id] =
+                supplier.name;
+
+        });
+
+
+        const table =
+            document.getElementById("purchaseTable");
+
+
+        table.innerHTML = "";
+
+
+        if (!purchases.length) {
+
+            table.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty">
+                        No purchases yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        purchases
+            .slice()
+            .reverse()
+            .forEach(purchase => {
+
+                const row =
+                    document.createElement("tr");
+
+
+                const date =
+                    purchase.created_at
+                        ? new Date(
+                            purchase.created_at
+                        ).toLocaleString("en-IN")
+                        : "-";
+
+
+                row.innerHTML = `
+
+                    <td>${purchase.id}</td>
+
+                    <td>
+                        ${
+                            productMap[purchase.product_id]
+                            || `Product #${purchase.product_id}`
+                        }
+                    </td>
+
+                    <td>
+                        ${
+                            purchase.supplier_id
+                            ? (
+                                supplierMap[
+                                    purchase.supplier_id
+                                ]
+                                || `Supplier #${purchase.supplier_id}`
+                            )
+                            : "-"
+                        }
+                    </td>
+
+                    <td>${purchase.quantity}</td>
+
+                    <td>
+                        ₹${Number(
+                            purchase.cost_price
+                        ).toFixed(2)}
+                    </td>
+
+                    <td>
+                        ₹${Number(
+                            purchase.total
+                        ).toFixed(2)}
+                    </td>
+
+                    <td>${date}</td>
+
+                `;
+
+
+                table.appendChild(row);
+
+            });
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById("purchaseTable")
+            .innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty">
+                        Could not load purchases.
+                    </td>
+                </tr>
+            `;
+
+    }
+
+}
+
+
+// Initial loading
+
+loadProducts();
+
+loadSuppliers();
+
+loadPurchases();
+
+calculateTotal();
+
+</script>
+
+</body>
+</html>

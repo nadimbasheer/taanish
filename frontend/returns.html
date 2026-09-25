@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Sales Returns</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        button {
+            margin-top: 15px;
+            cursor: pointer;
+            background: #222;
+            color: white;
+            border: none;
+        }
+
+        button:hover {
+            background: #444;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background: #eee;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Sales Returns</h1>
+
+
+    <!-- Return Form -->
+
+    <div class="card">
+
+        <h2>Create Return</h2>
+
+        <label for="saleId">Sale ID</label>
+
+        <input
+            type="number"
+            id="saleId"
+            placeholder="Example: 1"
+        >
+
+
+        <button onclick="loadSale()">
+            Load Sale
+        </button>
+
+
+        <div id="saleInfo"></div>
+
+
+        <label for="productId">Product</label>
+
+        <select id="productId">
+            <option value="">Select product</option>
+        </select>
+
+
+        <label for="quantity">Return Quantity</label>
+
+        <input
+            type="number"
+            id="quantity"
+            min="1"
+            value="1"
+        >
+
+
+        <label for="refundAmount">Refund Amount</label>
+
+        <input
+            type="number"
+            id="refundAmount"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+        >
+
+
+        <label for="refundMethod">Refund Method</label>
+
+        <select id="refundMethod">
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Card">Card</option>
+        </select>
+
+
+        <label for="reason">Reason</label>
+
+        <textarea
+            id="reason"
+            rows="3"
+            placeholder="Reason for return"
+        ></textarea>
+
+
+        <button onclick="createReturn()">
+            Process Return
+        </button>
+
+
+        <div id="message" class="message"></div>
+
+    </div>
+
+
+    <!-- Return History -->
+
+    <div class="card">
+
+        <h2>Return History</h2>
+
+        <button onclick="loadReturns()">
+            Refresh Returns
+        </button>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Invoice</th>
+                    <th>Product</th>
+                    <th>Quantity</th>
+                    <th>Refund</th>
+                    <th>Method</th>
+                    <th>Reason</th>
+                    <th>Date</th>
+                </tr>
+
+            </thead>
+
+
+            <tbody id="returnsTable">
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+
+// ========================================
+// CHECK LOGIN
+// ========================================
+
+const token = localStorage.getItem("access_token");
+
+if (!token) {
+
+    window.location.href = "login.html";
+
+}
+
+
+// ========================================
+// LOAD SALE
+// ========================================
+
+async function loadSale() {
+
+    const saleId =
+        document.getElementById("saleId").value;
+
+
+    if (!saleId) {
+
+        alert("Enter Sale ID");
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/sales/${saleId}`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization":
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+        // TOKEN EXPIRED / INVALID
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || "Sale not found"
+            );
+
+        }
+
+
+        const sale = data;
+
+
+        document.getElementById("saleInfo").innerHTML = `
+
+            <p>
+                <strong>Invoice:</strong>
+                ${sale.invoice_number}
+            </p>
+
+            <p>
+                <strong>Total:</strong>
+                ₹${sale.total}
+            </p>
+
+        `;
+
+
+        const productSelect =
+            document.getElementById("productId");
+
+
+        productSelect.innerHTML =
+            `<option value="">Select product</option>`;
+
+
+        sale.items.forEach(item => {
+
+            const option =
+                document.createElement("option");
+
+
+            option.value =
+                item.product_id;
+
+
+            option.textContent =
+                `Product ID ${item.product_id} | Qty sold: ${item.quantity} | Price: ₹${item.price}`;
+
+
+            option.dataset.price =
+                item.price;
+
+
+            option.dataset.quantity =
+                item.quantity;
+
+
+            productSelect.appendChild(option);
+
+        });
+
+
+    } catch (error) {
+
+        alert(error.message);
+
+    }
+}
+
+
+// ========================================
+// PRODUCT SELECTION
+// ========================================
+
+document.getElementById("productId")
+    .addEventListener(
+        "change",
+        function () {
+
+            const selectedOption =
+                this.options[this.selectedIndex];
+
+
+            if (!selectedOption.value) {
+
+                return;
+            }
+
+
+            const price =
+                selectedOption.dataset.price;
+
+
+            document.getElementById("refundAmount")
+                .value =
+                price;
+
+        }
+    );
+
+
+// ========================================
+// CREATE RETURN
+// ========================================
+
+async function createReturn() {
+
+    const saleId =
+        Number(
+            document.getElementById("saleId").value
+        );
+
+
+    const productId =
+        Number(
+            document.getElementById("productId").value
+        );
+
+
+    const quantity =
+        Number(
+            document.getElementById("quantity").value
+        );
+
+
+    const refundAmount =
+        Number(
+            document.getElementById("refundAmount").value
+        );
+
+
+    const refundMethod =
+        document.getElementById("refundMethod").value;
+
+
+    const reason =
+        document.getElementById("reason").value;
+
+
+    if (!saleId || !productId) {
+
+        alert(
+            "Select a sale and product"
+        );
+
+        return;
+    }
+
+
+    if (quantity <= 0) {
+
+        alert(
+            "Quantity must be greater than 0"
+        );
+
+        return;
+    }
+
+
+    if (refundAmount < 0) {
+
+        alert(
+            "Refund amount cannot be negative"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/sales-returns/`,
+            {
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        `Bearer ${token}`
+
+                },
+
+                body: JSON.stringify({
+
+                    sale_id:
+                        saleId,
+
+                    product_id:
+                        productId,
+
+                    quantity:
+                        quantity,
+
+                    refund_amount:
+                        refundAmount,
+
+                    reason:
+                        reason,
+
+                    refund_method:
+                        refundMethod
+
+                })
+            }
+        );
+
+
+        // TOKEN EXPIRED / INVALID
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || "Return failed"
+            );
+
+        }
+
+
+        document.getElementById("message")
+            .textContent =
+            "Return processed successfully!";
+
+
+        document.getElementById("quantity")
+            .value = 1;
+
+
+        document.getElementById("refundAmount")
+            .value = "";
+
+
+        document.getElementById("reason")
+            .value = "";
+
+
+        document.getElementById("productId")
+            .value = "";
+
+
+        loadReturns();
+
+
+    } catch (error) {
+
+        document.getElementById("message")
+            .textContent =
+            error.message;
+
+    }
+
+}
+
+
+// ========================================
+// LOAD RETURN HISTORY
+// ========================================
+
+async function loadReturns() {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/sales-returns/`,
+            {
+                method: "GET",
+
+                headers: {
+                    "Authorization":
+                        `Bearer ${token}`
+                }
+            }
+        );
+
+
+        // TOKEN EXPIRED / INVALID
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+
+            window.location.href = "login.html";
+
+            return;
+        }
+
+
+        const returns =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                returns.detail ||
+                "Failed to load returns"
+            );
+
+        }
+
+
+        const table =
+            document.getElementById("returnsTable");
+
+
+        table.innerHTML = "";
+
+
+        returns.forEach(item => {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>${item.id}</td>
+
+                <td>
+                    ${item.invoice_number || "-"}
+                </td>
+
+                <td>
+                    ${item.product_name ||
+                    "Product " + item.product_id}
+                </td>
+
+                <td>
+                    ${item.quantity}
+                </td>
+
+                <td>
+                    ₹${item.refund_amount}
+                </td>
+
+                <td>
+                    ${item.refund_method}
+                </td>
+
+                <td>
+                    ${item.reason || "-"}
+                </td>
+
+                <td>
+                    ${item.created_at || "-"}
+                </td>
+
+            `;
+
+
+            table.appendChild(row);
+
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Error loading returns:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
+// START
+// ========================================
+
+loadReturns();
+
+</script>
+
+</body>
+</html>

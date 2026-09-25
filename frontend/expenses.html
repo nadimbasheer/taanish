@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Expenses - Fancy Shop</title>
+
+    <link rel="stylesheet"
+          href="../css/style.css">
+
+    <style>
+
+        .expenses-container {
+            padding: 25px;
+        }
+
+        .expenses-grid {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            box-sizing: border-box;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .btn {
+            border: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            width: 100%;
+            background: #16a34a;
+            color: white;
+        }
+
+        .edit-btn {
+            background: #e5e7eb;
+            color: #111827;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #f9fafb;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .total-box {
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 900px) {
+
+            .expenses-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="expenses-container">
+
+    <h1>Expenses</h1>
+
+    <p>
+        Manage shop expenses stored in PostgreSQL.
+    </p>
+
+
+    <div class="expenses-grid">
+
+
+        <!-- EXPENSE FORM -->
+
+        <div class="card">
+
+            <h2 id="formTitle">
+                Add Expense
+            </h2>
+
+
+            <div class="form-group">
+
+                <label>
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="expenseDate"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Category
+                </label>
+
+                <select id="category">
+
+                    <option value="Electricity">
+                        Electricity
+                    </option>
+
+                    <option value="Rent">
+                        Rent
+                    </option>
+
+                    <option value="Salary">
+                        Salary
+                    </option>
+
+                    <option value="Transport">
+                        Transport
+                    </option>
+
+                    <option value="Internet">
+                        Internet
+                    </option>
+
+                    <option value="Maintenance">
+                        Maintenance
+                    </option>
+
+                    <option value="Marketing">
+                        Marketing
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Description
+                </label>
+
+                <input
+                    type="text"
+                    id="description"
+                    placeholder="Example: Monthly electricity bill"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Amount
+                </label>
+
+                <input
+                    type="number"
+                    id="amount"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="0.00"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Payment Method
+                </label>
+
+                <select id="paymentMethod">
+
+                    <option value="Cash">
+                        Cash
+                    </option>
+
+                    <option value="UPI">
+                        UPI
+                    </option>
+
+                    <option value="Card">
+                        Card
+                    </option>
+
+                    <option value="Bank">
+                        Bank Transfer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Notes
+                </label>
+
+                <textarea
+                    id="notes"
+                    placeholder="Optional notes"
+                ></textarea>
+
+            </div>
+
+
+            <button
+                class="btn save-btn"
+                onclick="saveExpense()"
+            >
+                Save Expense
+            </button>
+
+
+            <button
+                class="btn"
+                id="cancelBtn"
+                onclick="cancelEdit()"
+                style="display:none; width:100%; margin-top:10px;"
+            >
+                Cancel Edit
+            </button>
+
+
+            <div
+                id="message"
+                class="message"
+            ></div>
+
+        </div>
+
+
+        <!-- EXPENSE LIST -->
+
+        <div class="card">
+
+            <h2>
+                Expense History
+            </h2>
+
+
+            <div class="total-box">
+
+                Total Expenses:
+
+                <span id="totalExpenses">
+                    ₹0.00
+                </span>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Date</th>
+
+                            <th>Category</th>
+
+                            <th>Description</th>
+
+                            <th>Amount</th>
+
+                            <th>Payment</th>
+
+                            <th>Actions</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="expensesTable">
+
+                        <tr>
+
+                            <td colspan="7">
+                                Loading...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+// ==========================================
+// API + JWT AUTHENTICATION
+// ==========================================
+
+const API_URL = "http://127.0.0.1:8000";
+
+const token = localStorage.getItem("access_token");
+
+
+if (!token) {
+
+    window.location.href = "login.html";
+
+}
+
+
+function getAuthHeaders() {
+
+    return {
+
+        "Authorization": `Bearer ${token}`
+
+    };
+
+}
+
+
+function handleUnauthorized(response) {
+
+    if (response.status === 401) {
+
+        localStorage.removeItem("access_token");
+
+        window.location.href = "login.html";
+
+        return true;
+
+    }
+
+    return false;
+
+}
+
+
+let expenses = [];
+
+let editingId = null;
+
+
+// ==========================================
+// LOAD EXPENSES
+// ==========================================
+
+async function loadExpenses() {
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/expenses/`,
+            {
+                headers: getAuthHeaders()
+            }
+        );
+
+
+        if (handleUnauthorized(response)) {
+            return;
+        }
+
+
+        const data = await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Failed to load expenses"
+            );
+
+        }
+
+
+        expenses = data;
+
+        displayExpenses();
+
+
+    } catch (error) {
+
+        document.getElementById("expensesTable")
+            .innerHTML = `
+                <tr>
+                    <td colspan="7">
+                        ${error.message}
+                    </td>
+                </tr>
+            `;
+
+    }
+
+}
+
+
+// ==========================================
+// DISPLAY EXPENSES
+// ==========================================
+
+function displayExpenses() {
+
+    const table =
+        document.getElementById("expensesTable");
+
+
+    if (expenses.length === 0) {
+
+        table.innerHTML = `
+            <tr>
+                <td colspan="7">
+                    No expenses found.
+                </td>
+            </tr>
+        `;
+
+
+        document.getElementById("totalExpenses")
+            .textContent = "₹0.00";
+
+
+        return;
+
+    }
+
+
+    let total = 0;
+
+
+    table.innerHTML = expenses.map(expense => {
+
+        total += Number(expense.amount);
+
+
+        const date = expense.date
+            ? new Date(expense.date)
+                .toLocaleDateString()
+            : "-";
+
+
+        return `
+
+            <tr>
+
+                <td>
+                    ${expense.id}
+                </td>
+
+                <td>
+                    ${date}
+                </td>
+
+                <td>
+                    ${expense.category}
+                </td>
+
+                <td>
+                    ${expense.description || "-"}
+                </td>
+
+                <td>
+                    ₹${Number(expense.amount).toFixed(2)}
+                </td>
+
+                <td>
+                    ${expense.payment_method}
+                </td>
+
+                <td>
+
+                    <button
+                        class="btn edit-btn"
+                        onclick="editExpense(${expense.id})"
+                    >
+                        Edit
+                    </button>
+
+                    <button
+                        class="btn delete-btn"
+                        onclick="deleteExpense(${expense.id})"
+                    >
+                        Delete
+                    </button>
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }).join("");
+
+
+    document.getElementById("totalExpenses")
+        .textContent =
+        `₹${total.toFixed(2)}`;
+
+}
+
+
+// ==========================================
+// SAVE EXPENSE
+// ==========================================
+
+async function saveExpense() {
+
+    const date =
+        document.getElementById("expenseDate").value;
+
+
+    const category =
+        document.getElementById("category").value;
+
+
+    const description =
+        document.getElementById("description").value;
+
+
+    const amount =
+        Number(document.getElementById("amount").value);
+
+
+    const paymentMethod =
+        document.getElementById("paymentMethod").value;
+
+
+    const notes =
+        document.getElementById("notes").value;
+
+
+    if (!category) {
+
+        showMessage(
+            "Please select a category.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if (!amount || amount <= 0) {
+
+        showMessage(
+            "Please enter a valid amount.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const expenseData = {
+
+        date: date
+            ? `${date}T00:00:00`
+            : null,
+
+        category: category,
+
+        description: description || null,
+
+        amount: amount,
+
+        payment_method: paymentMethod,
+
+        notes: notes || null
+
+    };
+
+
+    try {
+
+        let response;
+
+
+        if (editingId === null) {
+
+            // CREATE
+
+            response = await fetch(
+                `${API_URL}/expenses/`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        ...getAuthHeaders()
+                    },
+
+                    body:
+                        JSON.stringify(expenseData)
+                }
+            );
+
+
+        } else {
+
+            // UPDATE
+
+            response = await fetch(
+                `${API_URL}/expenses/${editingId}`,
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json",
+
+                        ...getAuthHeaders()
+                    },
+
+                    body:
+                        JSON.stringify(expenseData)
+                }
+            );
+
+        }
+
+
+        if (handleUnauthorized(response)) {
+            return;
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to save expense"
+            );
+
+        }
+
+
+        showMessage(
+            editingId === null
+                ? "Expense added successfully."
+                : "Expense updated successfully.",
+            "success"
+        );
+
+
+        clearForm();
+
+        await loadExpenses();
+
+
+    } catch (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// EDIT EXPENSE
+// ==========================================
+
+function editExpense(id) {
+
+    const expense =
+        expenses.find(
+            item => item.id === id
+        );
+
+
+    if (!expense) {
+
+        return;
+
+    }
+
+
+    editingId = id;
+
+
+    document.getElementById("formTitle")
+        .textContent =
+        "Edit Expense";
+
+
+    if (expense.date) {
+
+        const date =
+            new Date(expense.date);
+
+
+        const year =
+            date.getFullYear();
+
+
+        const month =
+            String(date.getMonth() + 1)
+                .padStart(2, "0");
+
+
+        const day =
+            String(date.getDate())
+                .padStart(2, "0");
+
+
+        document.getElementById("expenseDate")
+            .value =
+            `${year}-${month}-${day}`;
+
+    }
+
+
+    document.getElementById("category")
+        .value =
+        expense.category;
+
+
+    document.getElementById("description")
+        .value =
+        expense.description || "";
+
+
+    document.getElementById("amount")
+        .value =
+        expense.amount;
+
+
+    document.getElementById("paymentMethod")
+        .value =
+        expense.payment_method;
+
+
+    document.getElementById("notes")
+        .value =
+        expense.notes || "";
+
+
+    document.getElementById("cancelBtn")
+        .style.display =
+        "block";
+
+}
+
+
+// ==========================================
+// CANCEL EDIT
+// ==========================================
+
+function cancelEdit() {
+
+    editingId = null;
+
+    clearForm();
+
+}
+
+
+// ==========================================
+// CLEAR FORM
+// ==========================================
+
+function clearForm() {
+
+    editingId = null;
+
+
+    document.getElementById("formTitle")
+        .textContent =
+        "Add Expense";
+
+
+    document.getElementById("expenseDate")
+        .value = "";
+
+
+    document.getElementById("category")
+        .value =
+        "Electricity";
+
+
+    document.getElementById("description")
+        .value = "";
+
+
+    document.getElementById("amount")
+        .value = "";
+
+
+    document.getElementById("paymentMethod")
+        .value =
+        "Cash";
+
+
+    document.getElementById("notes")
+        .value = "";
+
+
+    document.getElementById("cancelBtn")
+        .style.display =
+        "none";
+
+}
+
+
+// ==========================================
+// DELETE EXPENSE
+// ==========================================
+
+async function deleteExpense(id) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this expense?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response = await fetch(
+            `${API_URL}/expenses/${id}`,
+            {
+                method: "DELETE",
+                headers: getAuthHeaders()
+            }
+        );
+
+
+        if (handleUnauthorized(response)) {
+            return;
+        }
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail ||
+                "Failed to delete expense"
+            );
+
+        }
+
+
+        showMessage(
+            "Expense deleted successfully.",
+            "success"
+        );
+
+
+        await loadExpenses();
+
+
+    } catch (error) {
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// ==========================================
+// MESSAGE
+// ==========================================
+
+function showMessage(message, type) {
+
+    const box =
+        document.getElementById("message");
+
+
+    box.textContent = message;
+
+
+    box.className =
+        `message ${type}`;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(() => {
+
+        box.style.display =
+            "none";
+
+    }, 4000);
+
+}
+
+
+// ==========================================
+// START
+// ==========================================
+
+loadExpenses();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1653 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TAANISH - Sales / POS</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <style>
+        .sales-container {
+            padding: 25px;
+        }
+
+        .sales-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 7px;
+            box-sizing: border-box;
+        }
+
+        #barcodeInput {
+            border: 2px solid #111827;
+            font-size: 16px;
+        }
+
+        .product-row {
+            display: grid;
+            grid-template-columns: 1fr 100px 100px 100px;
+            gap: 10px;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-row button,
+        .btn {
+            border: none;
+            padding: 9px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            background: #111827;
+            color: white;
+        }
+
+        .add-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .remove-btn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .cart-item {
+            display: grid;
+            grid-template-columns: 1fr 100px 90px 30px;
+            gap: 8px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-control button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 6px;
+            background: #111827;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .quantity-control span {
+            min-width: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .summary {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+
+        .total-row {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .complete-btn {
+            width: 100%;
+            background: #16a34a;
+            color: white;
+            font-size: 16px;
+            margin-top: 15px;
+            padding: 13px;
+        }
+
+        .complete-btn:hover {
+            opacity: 0.9;
+        }
+
+        .sale-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .complete-print-btn {
+            background: #15803d;
+            color: white;
+            font-size: 16px;
+            padding: 13px;
+        }
+
+        .cash-section {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e6eb;
+            border-radius: 8px;
+        }
+
+        .cash-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 7px 0;
+            gap: 10px;
+        }
+
+        .cash-row input {
+            width: 150px;
+            text-align: right;
+        }
+
+        .change-value {
+            font-weight: 800;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        @media (max-width: 900px) {
+
+            .sales-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-row {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div class="sales-container">
+
+    <h1>TAANISH POS</h1>
+
+
+    <div class="sales-grid">
+
+
+        <!-- ================================= -->
+        <!-- PRODUCTS -->
+        <!-- ================================= -->
+
+        <div class="card">
+
+            <h2>Products</h2>
+
+
+            <!-- BARCODE -->
+
+            <div class="form-group">
+
+                <label for="barcodeInput">
+                    Scan Barcode
+                </label>
+
+                <input
+                    type="text"
+                    id="barcodeInput"
+                    placeholder="Scan barcode here..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="form-group">
+
+                <label for="productSearch">
+                    Search Product
+                </label>
+
+                <input
+                    type="text"
+                    id="productSearch"
+                    placeholder="Search product..."
+                    oninput="displayProducts()"
+                >
+
+            </div>
+
+
+            <!-- PRODUCT LIST -->
+
+            <div id="productsList">
+                Loading products...
+            </div>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- CART -->
+        <!-- ================================= -->
+
+        <div class="card">
+
+            <h2>Cart</h2>
+
+
+            <!-- CUSTOMER -->
+
+            <div class="form-group">
+
+                <label for="customerSelect">
+                    Customer
+                </label>
+
+                <select id="customerSelect">
+
+                    <option value="">
+                        Walk-in Customer
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- CART -->
+
+            <div id="cartList">
+                Cart is empty
+            </div>
+
+
+            <!-- SUMMARY -->
+
+            <div class="summary">
+
+
+                <!-- SUBTOTAL -->
+
+                <div class="summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span id="subtotal">
+                        ₹0.00
+                    </span>
+
+                </div>
+
+
+                <!-- DISCOUNT -->
+
+                <div class="form-group">
+
+                    <label for="discount">
+                        Discount
+                    </label>
+
+                    <input
+                        type="number"
+                        id="discount"
+                        value="0"
+                        min="0"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+
+                <!-- TAX -->
+
+                <div class="form-group">
+
+                    <label for="tax">
+                        Tax
+                    </label>
+
+                    <input
+                        type="number"
+                        id="tax"
+                        value="0"
+                        min="0"
+                        oninput="calculateTotal()"
+                    >
+
+                </div>
+
+
+                <!-- PAYMENT -->
+
+                <div class="form-group">
+
+                    <label for="paymentMethod">
+                        Payment Method
+                    </label>
+
+                    <select id="paymentMethod" onchange="paymentMethodChanged()">
+
+                        <option value="Cash">
+                            Cash
+                        </option>
+
+                        <option value="UPI">
+                            UPI
+                        </option>
+
+                        <option value="Card">
+                            Card
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- TOTAL -->
+
+                <div class="summary-row total-row">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span id="total">
+                        ₹0.00
+                    </span>
+
+                </div>
+
+
+                <!-- COMPLETE SALE -->
+
+                <div class="cash-section" id="cashSection">
+
+                    <div class="cash-row">
+                        <strong>Cash Received</strong>
+                        <input
+                            type="number"
+                            id="cashReceivedInput"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                            oninput="calculateChange()"
+                        >
+                    </div>
+
+                    <div class="cash-row">
+                        <strong>Change</strong>
+                        <span id="changeAmount" class="change-value">₹0.00</span>
+                    </div>
+
+                </div>
+
+                <div class="sale-actions">
+
+                    <button
+                        type="button"
+                        class="btn complete-btn"
+                        id="completeSaleBtn"
+                        onclick="completeSale(false)"
+                    >
+                        COMPLETE SALE
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn complete-print-btn"
+                        id="completePrintBtn"
+                        onclick="completeSale(true)"
+                    >
+                        COMPLETE &amp; PRINT
+                    </button>
+
+                </div>
+
+
+                <!-- MESSAGE -->
+
+                <div
+                    id="message"
+                    class="message"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+// ========================================
+// API
+// ========================================
+
+const API_URL =
+    "http://127.0.0.1:8000";
+
+
+// ========================================
+// LOGIN CHECK
+// ========================================
+
+const token =
+    localStorage.getItem(
+        "access_token"
+    );
+
+
+if (!token) {
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+// ========================================
+// VARIABLES
+// ========================================
+
+let products = [];
+
+let customers = [];
+
+let cart = [];
+
+
+// ========================================
+// LOAD PRODUCTS
+// ========================================
+
+async function loadProducts() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/products/`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (response.status === 401) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const data =
+                await response.json();
+
+            throw new Error(
+                data.detail ||
+                "Failed to load products"
+            );
+
+        }
+
+
+        products =
+            await response.json();
+
+
+        displayProducts();
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        document.getElementById(
+            "productsList"
+        ).innerHTML =
+            `<p style="color:red;">
+                ${error.message}
+            </p>`;
+
+    }
+
+}
+
+
+// ========================================
+// DISPLAY PRODUCTS
+// ========================================
+
+function displayProducts() {
+
+    const container =
+        document.getElementById(
+            "productsList"
+        );
+
+
+    const search =
+        document
+            .getElementById(
+                "productSearch"
+            )
+            .value
+            .toLowerCase();
+
+
+    const filteredProducts =
+        products.filter(product =>
+
+            product.name
+                .toLowerCase()
+                .includes(search)
+
+            ||
+
+            (product.sku || "")
+                .toLowerCase()
+                .includes(search)
+
+            ||
+
+            (product.barcode || "")
+                .toLowerCase()
+                .includes(search)
+
+        );
+
+
+    if (
+        filteredProducts.length === 0
+    ) {
+
+        container.innerHTML =
+            "<p>No products found.</p>";
+
+        return;
+    }
+
+
+    container.innerHTML =
+        filteredProducts
+            .map(product => `
+
+        <div class="product-row">
+
+            <div>
+
+                <strong>
+                    ${product.name}
+                </strong>
+
+                <br>
+
+                <small>
+
+                    Stock:
+                    ${product.stock}
+
+                    ${
+                        product.barcode
+                        ? " | Barcode: " +
+                          product.barcode
+                        : ""
+                    }
+
+                </small>
+
+            </div>
+
+
+            <div>
+
+                ₹${Number(
+                    product.selling
+                ).toFixed(2)}
+
+            </div>
+
+
+            <div>
+
+                ${product.sku || "-"}
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn add-btn"
+                onclick="addToCart(${product.id})"
+
+                ${
+                    product.stock <= 0
+                    ? "disabled"
+                    : ""
+                }
+            >
+                Add
+            </button>
+
+        </div>
+
+    `)
+    .join("");
+
+}
+
+
+// ========================================
+// BARCODE SCANNER
+// ========================================
+
+const barcodeInput =
+    document.getElementById(
+        "barcodeInput"
+    );
+
+
+barcodeInput.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key !== "Enter"
+        ) {
+
+            return;
+
+        }
+
+
+        event.preventDefault();
+
+
+        const barcode =
+            barcodeInput.value.trim();
+
+
+        if (!barcode) {
+
+            return;
+
+        }
+
+
+        scanBarcode(barcode);
+
+    }
+);
+
+
+// ========================================
+// SCAN BARCODE
+// ========================================
+
+function scanBarcode(barcode) {
+
+    const product =
+        products.find(
+            product =>
+                String(
+                    product.barcode || ""
+                ).trim() === barcode
+        );
+
+
+    if (!product) {
+
+        showMessage(
+            `Product not found for barcode: ${barcode}`,
+            "error"
+        );
+
+
+        barcodeInput.select();
+
+        return;
+    }
+
+
+    if (
+        product.stock <= 0
+    ) {
+
+        showMessage(
+            `${product.name} is out of stock.`,
+            "error"
+        );
+
+
+        barcodeInput.select();
+
+        return;
+    }
+
+
+    addToCart(
+        product.id
+    );
+
+
+    barcodeInput.value = "";
+
+    barcodeInput.focus();
+
+}
+
+
+// ========================================
+// LOAD CUSTOMERS
+// ========================================
+
+async function loadCustomers() {
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/customers/`,
+                {
+                    method: "GET",
+
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
+                }
+            );
+
+
+        if (
+            response.status === 401
+        ) {
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+        }
+
+
+        if (!response.ok) {
+
+            const data =
+                await response.json();
+
+            throw new Error(
+                data.detail ||
+                "Failed to load customers"
+            );
+
+        }
+
+
+        customers =
+            await response.json();
+
+
+        const select =
+            document.getElementById(
+                "customerSelect"
+            );
+
+
+        customers.forEach(
+            customer => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    customer.id;
+
+
+                option.textContent =
+                    `${customer.name} - ${
+                        customer.phone ||
+                        "No phone"
+                    }`;
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Customer loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+// ========================================
+// ADD TO CART
+// ========================================
+
+function addToCart(
+    productId
+) {
+
+    const product =
+        products.find(
+            p =>
+                p.id ===
+                productId
+        );
+
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    const existing =
+        cart.find(
+            item =>
+                item.product_id ===
+                productId
+        );
+
+
+    if (existing) {
+
+        if (
+            existing.quantity <
+            product.stock
+        ) {
+
+            existing.quantity++;
+
+        }
+
+        else {
+
+            showMessage(
+                "Not enough stock.",
+                "error"
+            );
+
+            return;
+
+        }
+
+    }
+
+    else {
+
+        cart.push({
+
+            product_id:
+                product.id,
+
+            name:
+                product.name,
+
+            quantity:
+                1,
+
+            price:
+                Number(
+                    product.selling
+                ),
+
+            stock:
+                product.stock
+
+        });
+
+    }
+
+
+    displayCart();
+
+}
+
+
+// ========================================
+// DISPLAY CART
+// ========================================
+
+function displayCart() {
+
+    const container =
+        document.getElementById(
+            "cartList"
+        );
+
+
+    if (
+        cart.length === 0
+    ) {
+
+        container.innerHTML =
+            "Cart is empty";
+
+
+        calculateTotal();
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        cart.map(
+            (item, index) => `
+
+        <div class="cart-item">
+
+
+            <div>
+
+                <strong>
+                    ${item.name}
+                </strong>
+
+                <br>
+
+                ₹${item.price.toFixed(2)}
+
+            </div>
+
+
+            <div class="quantity-control">
+
+                <button
+                    type="button"
+                    onclick="decreaseQuantity(${index})"
+                >
+                    −
+                </button>
+
+
+                <span>
+                    ${item.quantity}
+                </span>
+
+
+                <button
+                    type="button"
+                    onclick="increaseQuantity(${index})"
+                >
+                    +
+                </button>
+
+            </div>
+
+
+            <div>
+
+                ₹${(
+                    item.price *
+                    item.quantity
+                ).toFixed(2)}
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn remove-btn"
+                onclick="removeFromCart(${index})"
+            >
+                ×
+            </button>
+
+        </div>
+
+    `)
+    .join("");
+
+
+    calculateTotal();
+
+}
+
+
+// ========================================
+// INCREASE QUANTITY
+// ========================================
+
+function increaseQuantity(
+    index
+) {
+
+    const item =
+        cart[index];
+
+
+    if (!item) {
+
+        return;
+
+    }
+
+
+    if (
+        item.quantity >=
+        item.stock
+    ) {
+
+        showMessage(
+            "Not enough stock.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    item.quantity++;
+
+
+    displayCart();
+
+}
+
+
+// ========================================
+// DECREASE QUANTITY
+// ========================================
+
+function decreaseQuantity(
+    index
+) {
+
+    const item =
+        cart[index];
+
+
+    if (!item) {
+
+        return;
+
+    }
+
+
+    if (
+        item.quantity > 1
+    ) {
+
+        item.quantity--;
+
+    }
+
+    else {
+
+        cart.splice(
+            index,
+            1
+        );
+
+    }
+
+
+    displayCart();
+
+}
+
+
+// ========================================
+// REMOVE ITEM
+// ========================================
+
+function removeFromCart(
+    index
+) {
+
+    cart.splice(
+        index,
+        1
+    );
+
+
+    displayCart();
+
+}
+
+
+// ========================================
+// CALCULATE TOTAL
+// ========================================
+
+function calculateTotal() {
+
+    const subtotal =
+        cart.reduce(
+            (sum, item) =>
+                sum +
+                item.price *
+                item.quantity,
+            0
+        );
+
+    const discount =
+        Math.max(
+            Number(document.getElementById("discount").value) || 0,
+            0
+        );
+
+    const tax =
+        Math.max(
+            Number(document.getElementById("tax").value) || 0,
+            0
+        );
+
+    const total = Math.max(
+        subtotal - discount + tax,
+        0
+    );
+
+    document.getElementById("subtotal").textContent =
+        `₹${subtotal.toFixed(2)}`;
+
+    document.getElementById("total").textContent =
+        `₹${total.toFixed(2)}`;
+
+    calculateChange();
+}
+
+
+// ========================================
+// CURRENT TOTAL
+// ========================================
+
+function getCurrentTotal() {
+
+    const subtotal =
+        cart.reduce(
+            (sum, item) =>
+                sum + item.price * item.quantity,
+            0
+        );
+
+    const discount =
+        Math.max(
+            Number(document.getElementById("discount").value) || 0,
+            0
+        );
+
+    const tax =
+        Math.max(
+            Number(document.getElementById("tax").value) || 0,
+            0
+        );
+
+    return Math.max(
+        subtotal - discount + tax,
+        0
+    );
+}
+
+
+// ========================================
+// PAYMENT METHOD
+// ========================================
+
+function paymentMethodChanged() {
+
+    const method =
+        document.getElementById("paymentMethod").value;
+
+    const section =
+        document.getElementById("cashSection");
+
+    if (method === "Cash") {
+        section.style.display = "block";
+        calculateChange();
+    } else {
+        section.style.display = "none";
+        document.getElementById("cashReceivedInput").value = "";
+        document.getElementById("changeAmount").textContent = "₹0.00";
+    }
+}
+
+
+// ========================================
+// CHANGE
+// ========================================
+
+function calculateChange() {
+
+    const method =
+        document.getElementById("paymentMethod").value;
+
+    if (method !== "Cash") {
+        return;
+    }
+
+    const total = getCurrentTotal();
+
+    const cash =
+        Number(
+            document.getElementById("cashReceivedInput").value
+        ) || 0;
+
+    const change = Math.max(cash - total, 0);
+
+    document.getElementById("changeAmount").textContent =
+        `₹${change.toFixed(2)}`;
+}
+
+
+// ========================================
+// COMPLETE SALE
+// ========================================
+
+async function completeSale(shouldPrint = false) {
+
+    if (cart.length === 0) {
+
+        showMessage(
+            "Cart is empty.",
+            "error"
+        );
+
+        return;
+    }
+
+    const discount =
+        Math.max(
+            Number(document.getElementById("discount").value) || 0,
+            0
+        );
+
+    const tax =
+        Math.max(
+            Number(document.getElementById("tax").value) || 0,
+            0
+        );
+
+    const customerValue =
+        document.getElementById("customerSelect").value;
+
+    const customerId =
+        customerValue ? Number(customerValue) : null;
+
+    const paymentMethod =
+        document.getElementById("paymentMethod").value;
+
+    const total = getCurrentTotal();
+
+    let cashReceived = 0;
+    let change = 0;
+
+    if (paymentMethod === "Cash") {
+
+        cashReceived =
+            Number(
+                document.getElementById("cashReceivedInput").value
+            ) || 0;
+
+        if (cashReceived < total) {
+
+            showMessage(
+                `Cash received is less than total. Required: ₹${total.toFixed(2)}`,
+                "error"
+            );
+
+            document.getElementById("cashReceivedInput").focus();
+            return;
+        }
+
+        change = cashReceived - total;
+    }
+
+    const saleData = {
+
+        customer_id: customerId,
+
+        items: cart.map(
+            item => ({
+                product_id: item.product_id,
+                quantity: item.quantity,
+                price: item.price
+            })
+        ),
+
+        discount: discount,
+        tax: tax,
+        payment_method: paymentMethod
+    };
+
+    const saleButton =
+        document.getElementById("completeSaleBtn");
+
+    const printButton =
+        document.getElementById("completePrintBtn");
+
+    saleButton.disabled = true;
+    printButton.disabled = true;
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_URL}/sales/`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(saleData)
+                }
+            );
+
+        if (response.status === 401) {
+
+            localStorage.removeItem("access_token");
+            window.location.href = "login.html";
+            return;
+        }
+
+        const result = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                result.detail || "Sale failed"
+            );
+        }
+
+        const saleId =
+            result.sale_id || result.id;
+
+        localStorage.setItem(
+            "last_invoice_number",
+            result.invoice_number
+        );
+
+        localStorage.setItem(
+            "last_sale_id",
+            saleId
+        );
+
+        if (paymentMethod === "Cash") {
+
+            localStorage.setItem(
+                "last_cash_received",
+                cashReceived.toFixed(2)
+            );
+
+            localStorage.setItem(
+                "last_change",
+                change.toFixed(2)
+            );
+
+        } else {
+
+            localStorage.removeItem("last_cash_received");
+            localStorage.removeItem("last_change");
+        }
+
+        showMessage(
+            `Sale completed! Invoice: ${result.invoice_number} | Total: ₹${Number(result.total).toFixed(2)}`,
+            "success"
+        );
+
+        /*
+         * Print only when COMPLETE & PRINT
+         * was clicked.
+         */
+        if (shouldPrint) {
+            await printReceiptPage();
+        }
+
+        cart = [];
+
+        document.getElementById("discount").value = 0;
+        document.getElementById("tax").value = 0;
+        document.getElementById("customerSelect").value = "";
+        document.getElementById("cashReceivedInput").value = "";
+        document.getElementById("paymentMethod").value = "Cash";
+
+        document.getElementById("cashSection").style.display = "block";
+        document.getElementById("changeAmount").textContent = "₹0.00";
+
+        displayCart();
+
+        await loadProducts();
+
+        barcodeInput.focus();
+
+    } catch (error) {
+
+        console.error(
+            "Sale error:",
+            error
+        );
+
+        showMessage(
+            error.message || "Sale could not be completed.",
+            "error"
+        );
+
+    } finally {
+
+        saleButton.disabled = false;
+        printButton.disabled = false;
+    }
+}
+
+
+// ========================================
+// PRINT WITHOUT OPENING RECEIPT PAGE
+// ========================================
+
+function printReceiptPage() {
+
+    return new Promise(
+        function(resolve) {
+
+            const iframe =
+                document.createElement("iframe");
+
+            iframe.style.position = "fixed";
+            iframe.style.width = "1px";
+            iframe.style.height = "1px";
+            iframe.style.border = "0";
+            iframe.style.opacity = "0";
+            iframe.style.left = "-10000px";
+            iframe.style.top = "-10000px";
+
+            iframe.src = "receipt.html";
+
+            document.body.appendChild(iframe);
+
+            iframe.onload = function() {
+
+                setTimeout(
+                    function() {
+
+                        try {
+                            iframe.contentWindow.focus();
+                            iframe.contentWindow.print();
+                        } catch (error) {
+                            console.error(
+                                "Print dialog error:",
+                                error
+                            );
+                        }
+
+                        setTimeout(
+                            function() {
+                                iframe.remove();
+                                resolve();
+                            },
+                            2500
+                        );
+
+                    },
+                    500
+                );
+            };
+
+        }
+    );
+}
+
+
+// ========================================
+// MESSAGE
+// ========================================
+
+function showMessage(
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.textContent =
+        message;
+
+
+    box.className =
+        `message ${type}`;
+
+
+    box.style.display =
+        "block";
+
+
+    setTimeout(
+        () => {
+
+            box.style.display =
+                "none";
+
+        },
+        5000
+    );
+
+}
+
+
+// ========================================
+// START
+// ========================================
+
+loadProducts();
+
+loadCustomers();
+
+
+setTimeout(
+    () => {
+
+        barcodeInput.focus();
+
+    },
+    500
+);
+
+</script>
+
+</body>
+
+</html>

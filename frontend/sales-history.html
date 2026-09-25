@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TAANISH - Sales History</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f8;
+    color:#172033;
+}
+
+.page{
+    padding:28px;
+    max-width:1500px;
+    margin:auto;
+}
+
+/* TOPBAR */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    gap:15px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.brand-logo{
+    width:48px;
+    height:48px;
+    border-radius:12px;
+    background:#111827;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:19px;
+}
+
+h1{
+    margin:0;
+    font-size:27px;
+}
+
+.subtitle{
+    margin-top:5px;
+    color:#737b8c;
+    font-size:14px;
+}
+
+.top-actions{
+    display:flex;
+    gap:10px;
+}
+
+.top-btn{
+    border:none;
+    border-radius:8px;
+    padding:11px 17px;
+    cursor:pointer;
+    font-size:14px;
+    font-weight:600;
+}
+
+.dashboard-btn{
+    background:#111827;
+    color:white;
+}
+
+.refresh-btn{
+    background:white;
+    color:#172033;
+    border:1px solid #dce1e7;
+}
+
+/* STATS */
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:16px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e1e5eb;
+    border-radius:13px;
+    padding:20px;
+}
+
+.label{
+    color:#737b8c;
+    font-size:13px;
+    margin-bottom:9px;
+}
+
+.value{
+    font-size:25px;
+    font-weight:700;
+}
+
+/* SEARCH */
+
+.search-card{
+    background:white;
+    border:1px solid #e1e5eb;
+    border-radius:13px;
+    padding:15px;
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.search-card input{
+    flex:1;
+    height:42px;
+    border:1px solid #d5d9df;
+    border-radius:8px;
+    padding:0 13px;
+    font-size:14px;
+    outline:none;
+}
+
+.search-card input:focus{
+    border-color:#111827;
+}
+
+.btn{
+    border:none;
+    border-radius:8px;
+    padding:0 18px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.search-btn{
+    background:#111827;
+    color:white;
+}
+
+.clear-btn{
+    background:#edf0f3;
+    color:#172033;
+}
+
+/* TABLE */
+
+.table-card{
+    background:white;
+    border:1px solid #e1e5eb;
+    border-radius:13px;
+    overflow:hidden;
+}
+
+.table-header{
+    padding:18px 20px;
+    border-bottom:1px solid #e5e7eb;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.table-title{
+    font-size:18px;
+    font-weight:700;
+}
+
+.table-subtitle{
+    color:#737b8c;
+    font-size:12px;
+    margin-top:4px;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+th{
+    background:#fafbfc;
+    padding:13px;
+    text-align:left;
+    font-size:11px;
+    color:#596274;
+    border-bottom:1px solid #e5e7eb;
+    white-space:nowrap;
+}
+
+td{
+    padding:14px 13px;
+    font-size:13px;
+    border-bottom:1px solid #edf0f3;
+    vertical-align:middle;
+}
+
+tr:hover td{
+    background:#fafbfd;
+}
+
+.invoice{
+    font-weight:700;
+}
+
+.total{
+    font-weight:700;
+}
+
+/* STATUS */
+
+.status{
+    background:#e8f7ed;
+    color:#217a3c;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+/* ACTION */
+
+.view-btn{
+    background:#111827;
+    color:white;
+    border:none;
+    padding:8px 13px;
+    border-radius:7px;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:600;
+}
+
+.view-btn:hover{
+    opacity:.9;
+}
+
+/* STATES */
+
+.loading,
+.empty,
+.error{
+    text-align:center;
+    padding:50px;
+    color:#737b8c;
+}
+
+.error{
+    color:#b42318;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:800px){
+
+    .page{
+        padding:16px;
+    }
+
+    .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .top-actions{
+        width:100%;
+    }
+
+    .top-btn{
+        flex:1;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .search-card{
+        flex-direction:column;
+    }
+
+    .btn{
+        height:42px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="page">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                T
+            </div>
+
+            <div>
+
+                <h1>Sales History</h1>
+
+                <div class="subtitle">
+                    TAANISH · Sales & Invoice Management
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="top-actions">
+
+            <button
+                class="top-btn refresh-btn"
+                onclick="loadSales()"
+            >
+                ↻ Refresh
+            </button>
+
+            <button
+                class="top-btn dashboard-btn"
+                onclick="goDashboard()"
+            >
+                ← Dashboard
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+        <div class="card">
+
+            <div class="label">
+                Total Invoices
+            </div>
+
+            <div
+                class="value"
+                id="totalInvoices"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                Total Sales
+            </div>
+
+            <div
+                class="value"
+                id="totalSales"
+            >
+                ₹0.00
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                Average Invoice
+            </div>
+
+            <div
+                class="value"
+                id="averageInvoice"
+            >
+                ₹0.00
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SEARCH -->
+
+    <div class="search-card">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by invoice number..."
+        >
+
+        <button
+            class="btn search-btn"
+            onclick="searchSales()"
+        >
+            Search
+        </button>
+
+        <button
+            class="btn clear-btn"
+            onclick="clearSearch()"
+        >
+            Clear
+        </button>
+
+    </div>
+
+
+    <!-- TABLE -->
+
+    <div class="table-card">
+
+        <div class="table-header">
+
+            <div>
+
+                <div class="table-title">
+                    Sales / Invoices
+                </div>
+
+                <div class="table-subtitle">
+                    Latest transactions appear first
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>INVOICE</th>
+
+                        <th>DATE</th>
+
+                        <th>CUSTOMER</th>
+
+                        <th>PAYMENT</th>
+
+                        <th>STATUS</th>
+
+                        <th>TOTAL</th>
+
+                        <th>ACTION</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="salesTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="loading"
+                        >
+                            Loading sales...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_URL = "http://127.0.0.1:8000";
+
+const token =
+    localStorage.getItem("access_token");
+
+let allSales = [];
+
+
+/* LOGIN CHECK */
+
+if(!token){
+
+    window.location.href =
+        "login.html";
+
+}
+
+
+/* AUTH */
+
+function getHeaders(){
+
+    return {
+
+        "Authorization":
+            "Bearer " + token,
+
+        "Content-Type":
+            "application/json"
+
+    };
+
+}
+
+
+/* DASHBOARD */
+
+function goDashboard(){
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* MONEY */
+
+function money(value){
+
+    return "₹" +
+        Number(value || 0)
+        .toFixed(2);
+
+}
+
+
+/* DATE */
+
+function formatDate(value){
+
+    if(!value){
+
+        return "-";
+
+    }
+
+    const date =
+        new Date(value);
+
+    if(
+        isNaN(
+            date.getTime()
+        )
+    ){
+
+        return value;
+
+    }
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+/* LOAD SALES */
+
+async function loadSales(){
+
+    const table =
+        document.getElementById(
+            "salesTableBody"
+        );
+
+    table.innerHTML =
+        `
+        <tr>
+            <td
+                colspan="7"
+                class="loading"
+            >
+                Loading sales...
+            </td>
+        </tr>
+        `;
+
+    try{
+
+        const response =
+            await fetch(
+                API_URL + "/sales/",
+                {
+                    method:"GET",
+                    headers:getHeaders()
+                }
+            );
+
+
+        /* UNAUTHORIZED */
+
+        if(
+            response.status === 401
+        ){
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Server returned " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if(
+            !Array.isArray(data)
+        ){
+
+            throw new Error(
+                "Invalid sales response"
+            );
+
+        }
+
+
+        /*
+            BACKEND ALREADY RETURNS
+            NEWEST SALES FIRST.
+            SORT AGAIN SAFELY BY ID.
+        */
+
+        allSales =
+            data.sort(
+                (a,b) =>
+                    Number(b.id || 0) -
+                    Number(a.id || 0)
+            );
+
+
+        updateStats();
+
+        displaySales(
+            allSales
+        );
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Sales history error:",
+            error
+        );
+
+        table.innerHTML =
+            `
+            <tr>
+                <td
+                    colspan="7"
+                    class="error"
+                >
+                    Unable to load sales.
+                    Please check that the
+                    server is running.
+                </td>
+            </tr>
+            `;
+
+    }
+
+}
+
+
+/* STATS */
+
+function updateStats(){
+
+    const count =
+        allSales.length;
+
+    let total = 0;
+
+
+    for(
+        const sale of allSales
+    ){
+
+        total += Number(
+            sale.total || 0
+        );
+
+    }
+
+
+    const average =
+        count > 0
+            ? total / count
+            : 0;
+
+
+    document.getElementById(
+        "totalInvoices"
+    ).textContent =
+        count;
+
+
+    document.getElementById(
+        "totalSales"
+    ).textContent =
+        money(total);
+
+
+    document.getElementById(
+        "averageInvoice"
+    ).textContent =
+        money(average);
+
+}
+
+
+/* DISPLAY */
+
+function displaySales(sales){
+
+    const table =
+        document.getElementById(
+            "salesTableBody"
+        );
+
+
+    if(
+        sales.length === 0
+    ){
+
+        table.innerHTML =
+            `
+            <tr>
+                <td
+                    colspan="7"
+                    class="empty"
+                >
+                    No sales found.
+                </td>
+            </tr>
+            `;
+
+        return;
+
+    }
+
+
+    table.innerHTML = "";
+
+
+    for(
+        const sale of sales
+    ){
+
+        const row =
+            document.createElement(
+                "tr"
+            );
+
+
+        const invoice =
+            sale.invoice_number ||
+            "-";
+
+
+        const customer =
+            sale.customer_id
+                ? "Customer #" +
+                  sale.customer_id
+                : "Walk-in Customer";
+
+
+        const payment =
+            sale.payment_method ||
+            "-";
+
+
+        const status =
+            sale.status ||
+            "Completed";
+
+
+        row.innerHTML =
+
+            `
+            <td>
+                <span class="invoice">
+                    ${escapeHtml(invoice)}
+                </span>
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    formatDate(
+                        sale.created_at
+                    )
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(customer)}
+            </td>
+
+            <td>
+                ${escapeHtml(payment)}
+            </td>
+
+            <td>
+                <span class="status">
+                    ${escapeHtml(status)}
+                </span>
+            </td>
+
+            <td>
+                <span class="total">
+                    ${money(sale.total)}
+                </span>
+            </td>
+
+            <td>
+                <button
+                    class="view-btn"
+                    onclick="viewInvoice(${sale.id})"
+                >
+                    View Invoice
+                </button>
+            </td>
+            `;
+
+
+        table.appendChild(row);
+
+    }
+
+}
+
+
+/* HTML SAFETY */
+
+function escapeHtml(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* SEARCH */
+
+function searchSales(){
+
+    const text =
+        document
+        .getElementById(
+            "searchInput"
+        )
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    if(!text){
+
+        displaySales(
+            allSales
+        );
+
+        return;
+
+    }
+
+
+    const filtered =
+        allSales.filter(
+            function(sale){
+
+                return String(
+                    sale.invoice_number ||
+                    ""
+                )
+                .toLowerCase()
+                .includes(text);
+
+            }
+        );
+
+
+    displaySales(
+        filtered
+    );
+
+}
+
+
+/* CLEAR */
+
+function clearSearch(){
+
+    document
+        .getElementById(
+            "searchInput"
+        )
+        .value = "";
+
+
+    displaySales(
+        allSales
+    );
+
+}
+
+
+/* ENTER SEARCH */
+
+document
+    .getElementById(
+        "searchInput"
+    )
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(
+                event.key === "Enter"
+            ){
+
+                searchSales();
+
+            }
+
+        }
+    );
+
+
+/* VIEW INVOICE */
+
+async function viewInvoice(id){
+
+    try{
+
+        /*
+            First confirm the invoice
+            exists and get its details.
+        */
+
+        const response =
+            await fetch(
+                API_URL +
+                "/sales/" +
+                id,
+                {
+                    method:"GET",
+                    headers:getHeaders()
+                }
+            );
+
+
+        if(
+            response.status === 401
+        ){
+
+            localStorage.removeItem(
+                "access_token"
+            );
+
+            window.location.href =
+                "login.html";
+
+            return;
+
+        }
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Unable to load invoice"
+            );
+
+        }
+
+
+        const sale =
+            await response.json();
+
+
+        /*
+            Store invoice information
+            for receipt.html.
+        */
+
+        localStorage.setItem(
+            "last_invoice_number",
+            sale.invoice_number
+        );
+
+
+        localStorage.setItem(
+            "last_sale_id",
+            sale.id
+        );
+
+
+        /*
+            Open the existing
+            TAANISH invoice page.
+        */
+
+        window.location.href =
+            "receipt.html";
+
+
+    }
+    catch(error){
+
+        console.error(
+            "Invoice error:",
+            error
+        );
+
+        alert(
+            "Unable to open invoice."
+        );
+
+    }
+
+}
+
+
+/* START */
+
+loadSales();
+
+</script>
+
+</body>
+</html>
