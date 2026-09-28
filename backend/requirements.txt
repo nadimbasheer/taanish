@@ -7,3 +7,5 @@ pydantic
 pwdlib[argon2]
 PyJWT
 alembic
+openpyxl
+python-multipart

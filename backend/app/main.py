@@ -33,6 +33,7 @@ from app.routes.settings import router as settings_router
 from app.routes.users import router as users_router
 from app.routes.auth import router as auth_router
 from app.routes.sale_return import router as sale_return_router
+from app.routes.product_import import router as product_import_router
 
 
 # Load environment variables
@@ -75,6 +76,7 @@ app.include_router(settings_router)
 app.include_router(users_router)
 app.include_router(auth_router)
 app.include_router(sale_return_router)
+app.include_router(product_import_router)
 
 
 # Home
