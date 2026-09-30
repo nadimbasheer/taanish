@@ -6,11 +6,9 @@
 
     <title>TAANISH - Barcode Print</title>
 
-    <!-- Barcode Library -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
         }
@@ -22,9 +20,9 @@
             background: #f5f5f5;
         }
 
-        /* ==============================
-           MAIN SCREEN
-        ============================== */
+        /* =========================
+           SCREEN
+        ========================= */
 
         .container {
             width: 100%;
@@ -78,18 +76,17 @@
         }
 
 
-        /* ==============================
+        /* =========================
            50 × 30 MM LABEL
-        ============================== */
+        ========================= */
 
         .label-preview {
-
             width: 50mm;
             height: 30mm;
 
             margin: 25px auto;
 
-            padding: 1.5mm;
+            padding: 0.8mm 1.5mm;
 
             background: white;
 
@@ -104,33 +101,29 @@
         /* TAANISH */
 
         .shop-name {
-
-            font-size: 14px;
-
+            font-size: 13px;
             font-weight: 800;
 
-            line-height: 1;
+            line-height: 3.5mm;
+            height: 3.5mm;
 
             margin: 0;
         }
 
 
-        /* PRODUCT NAME */
+        /* PRODUCT */
 
         .product-name {
-
-            font-size: 10px;
-
+            font-size: 9px;
             font-weight: 600;
 
-            line-height: 1;
+            line-height: 3.5mm;
+            height: 3.5mm;
 
-            margin-top: 1mm;
+            margin: 0;
 
             white-space: nowrap;
-
             overflow: hidden;
-
             text-overflow: ellipsis;
         }
 
@@ -138,113 +131,89 @@
         /* BARCODE */
 
         .barcode {
-
             display: block;
 
             width: 45mm;
+            height: 9mm;
 
-            height: 11mm;
-
-            margin: 1.5mm auto 0 auto;
+            margin: 0.5mm auto 0;
         }
 
 
         /* BARCODE NUMBER */
 
         .barcode-number {
-
-            font-size: 8px;
-
+            font-size: 7px;
             font-weight: 600;
 
-            line-height: 1;
+            line-height: 3mm;
+            height: 3mm;
 
-            margin-top: 0.5mm;
+            margin: 0;
         }
 
 
         /* PRICE */
 
         .price {
-
-            font-size: 10px;
-
+            font-size: 9px;
             font-weight: 800;
 
-            line-height: 1;
+            line-height: 3.5mm;
+            height: 3.5mm;
 
-            margin-top: 1mm;
+            margin: 0;
         }
 
 
-        /* ==============================
-           PRINT SETTINGS
-        ============================== */
+        /* =========================
+           PRINT
+        ========================= */
 
         @media print {
 
             @page {
-
                 size: 50mm 30mm;
-
                 margin: 0;
             }
 
-
             html,
             body {
-
                 width: 50mm;
-
                 height: 30mm;
 
                 margin: 0;
-
                 padding: 0;
 
                 background: white;
             }
 
-
             .container {
-
                 width: 50mm;
-
                 height: 30mm;
 
                 max-width: none;
 
                 margin: 0;
-
                 padding: 0;
 
                 background: white;
-
                 border-radius: 0;
             }
 
-
-            /* Hide controls */
-
             .container > *:not(.label-preview) {
-
                 display: none !important;
             }
 
-
-            /* Actual printed label */
-
             .label-preview {
-
                 display: block !important;
 
                 width: 50mm;
-
                 height: 30mm;
 
                 margin: 0;
 
-                padding: 1.5mm;
+                padding: 0.8mm 1.5mm;
 
                 border: none;
 
@@ -253,44 +222,35 @@
                 overflow: hidden;
             }
 
-
             .shop-name {
-
-                font-size: 14px;
-
-                font-weight: 800;
+                font-size: 13px;
+                line-height: 3.5mm;
+                height: 3.5mm;
             }
-
 
             .product-name {
-
-                font-size: 10px;
-
-                font-weight: 600;
+                font-size: 9px;
+                line-height: 3.5mm;
+                height: 3.5mm;
             }
-
 
             .barcode {
-
                 width: 45mm;
+                height: 9mm;
 
-                height: 11mm;
+                margin: 0.5mm auto 0;
             }
-
 
             .barcode-number {
-
-                font-size: 8px;
-
-                font-weight: 600;
+                font-size: 7px;
+                line-height: 3mm;
+                height: 3mm;
             }
 
-
             .price {
-
-                font-size: 10px;
-
-                font-weight: 800;
+                font-size: 9px;
+                line-height: 3.5mm;
+                height: 3.5mm;
             }
         }
 
@@ -300,9 +260,7 @@
 
 <body>
 
-
 <div class="container">
-
 
     <h1>
         TAANISH Barcode Printer
@@ -346,31 +304,27 @@
     </div>
 
 
-    <!-- PRINT BUTTON -->
+    <!-- PRINT -->
 
     <button onclick="printLabel()">
-
         PRINT LABEL
-
     </button>
 
 
-    <!-- ==============================
-         50 × 30 MM LABEL
-    ============================== -->
+    <!-- =========================
+         ACTUAL LABEL
+         50 × 30 MM
+    ========================= -->
 
     <div
         class="label-preview"
         id="labelPreview"
     >
 
-
         <!-- SHOP NAME -->
 
         <div class="shop-name">
-
             TAANISH
-
         </div>
 
 
@@ -380,9 +334,7 @@
             class="product-name"
             id="previewName"
         >
-
             Product Name
-
         </div>
 
 
@@ -400,9 +352,7 @@
             class="barcode-number"
             id="previewBarcode"
         >
-
             Barcode
-
         </div>
 
 
@@ -412,346 +362,317 @@
             class="price"
             id="previewPrice"
         >
-
             ₹0
-
         </div>
 
-
     </div>
-
 
 </div>
 
 
 <script>
 
+    /* =========================
+       API
+    ========================= */
 
-/* ==============================
-   API
-============================== */
-
-const API_URL =
-    "https://taanish.onrender.com";
-
-
-/* ==============================
-   LOGIN TOKEN
-============================== */
-
-const token =
-    localStorage.getItem(
-        "access_token"
-    );
+    const API_URL =
+        "https://taanish.onrender.com";
 
 
-if (!token) {
+    /* =========================
+       AUTH
+    ========================= */
 
-    window.location.href =
-        "login.html";
-
-}
-
-
-/* ==============================
-   PRODUCTS
-============================== */
-
-let products = [];
+    const token =
+        localStorage.getItem(
+            "access_token"
+        );
 
 
-/* ==============================
-   LOAD PRODUCTS
-============================== */
+    if (!token) {
 
-async function loadProducts() {
+        window.location.href =
+            "login.html";
 
-    try {
+    }
 
-        const response =
-            await fetch(
-                `${API_URL}/products/`,
-                {
-                    headers: {
-                        "Authorization":
-                            `Bearer ${token}`
+
+    /* =========================
+       PRODUCTS
+    ========================= */
+
+    let products = [];
+
+
+    /* =========================
+       LOAD PRODUCTS
+    ========================= */
+
+    async function loadProducts() {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_URL}/products/`,
+                    {
+                        headers: {
+                            "Authorization":
+                                `Bearer ${token}`
+                        }
                     }
+                );
+
+
+            /* TOKEN EXPIRED */
+
+            if (response.status === 401) {
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+            }
+
+
+            /* SERVER ERROR */
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Could not load products"
+                );
+
+            }
+
+
+            /* READ PRODUCTS */
+
+            products =
+                await response.json();
+
+
+            const select =
+                document.getElementById(
+                    "productSelect"
+                );
+
+
+            select.innerHTML =
+                `<option value="">
+                    Select a product
+                </option>`;
+
+
+            /* ADD PRODUCTS TO DROPDOWN */
+
+            products.forEach(
+                product => {
+
+                    if (!product.barcode) {
+                        return;
+                    }
+
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        product.id;
+
+
+                    option.textContent =
+                        `${product.name} - ${product.barcode} - ₹${product.selling}`;
+
+
+                    select.appendChild(
+                        option
+                    );
+
                 }
             );
 
 
-        /* LOGIN EXPIRED */
+            /* WHEN PRODUCT CHANGES */
 
-        if (response.status === 401) {
-
-            localStorage.removeItem(
-                "access_token"
+            select.addEventListener(
+                "change",
+                updatePreview
             );
 
-            window.location.href =
-                "login.html";
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+
+            document.getElementById(
+                "productSelect"
+            ).innerHTML =
+
+                `<option value="">
+                    Failed to load products
+                </option>`;
+
+        }
+
+    }
+
+
+    /* =========================
+       UPDATE LABEL
+    ========================= */
+
+    function updatePreview() {
+
+        const id =
+            document.getElementById(
+                "productSelect"
+            ).value;
+
+
+        if (!id) {
+            return;
+        }
+
+
+        const product =
+            products.find(
+                p =>
+                    String(p.id) ===
+                    String(id)
+            );
+
+
+        if (!product) {
+            return;
+        }
+
+
+        /* PRODUCT NAME */
+
+        document.getElementById(
+            "previewName"
+        ).textContent =
+            product.name;
+
+
+        /* BARCODE NUMBER */
+
+        document.getElementById(
+            "previewBarcode"
+        ).textContent =
+            product.barcode;
+
+
+        /* PRICE */
+
+        document.getElementById(
+            "previewPrice"
+        ).textContent =
+            `₹${product.selling}`;
+
+
+        /* GENERATE CODE 128 */
+
+        JsBarcode(
+            "#barcode",
+            product.barcode,
+            {
+                format: "CODE128",
+
+                width: 1.7,
+
+                height: 34,
+
+                displayValue: false,
+
+                margin: 0
+            }
+        );
+
+    }
+
+
+    /* =========================
+       PRINT LABEL
+    ========================= */
+
+    function printLabel() {
+
+        const id =
+            document.getElementById(
+                "productSelect"
+            ).value;
+
+
+        if (!id) {
+
+            alert(
+                "Please select a product."
+            );
 
             return;
         }
 
 
-        /* OTHER ERROR */
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Could not load products"
-            );
-
-        }
-
-
-        /* GET PRODUCTS */
-
-        products =
-            await response.json();
-
-
-        const select =
-            document.getElementById(
-                "productSelect"
+        const quantity =
+            parseInt(
+                document.getElementById(
+                    "quantity"
+                ).value
             );
 
 
-        select.innerHTML =
-            `<option value="">
-                Select a product
-            </option>`;
+        if (
+            !quantity ||
+            quantity < 1
+        ) {
 
+            alert(
+                "Enter a valid quantity."
+            );
 
-        /* ADD PRODUCTS */
-
-        products.forEach(
-            product => {
-
-                /* Only products with barcode */
-
-                if (!product.barcode) {
-
-                    return;
-
-                }
-
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    product.id;
-
-
-                option.textContent =
-                    `${product.name} - ${product.barcode} - ₹${product.selling}`;
-
-
-                select.appendChild(
-                    option
-                );
-
-            }
-        );
-
-
-        /* PRODUCT CHANGE */
-
-        select.addEventListener(
-            "change",
-            updatePreview
-        );
-
-    }
-
-
-    catch (error) {
-
-        console.error(error);
-
-
-        document.getElementById(
-            "productSelect"
-        ).innerHTML =
-
-            `<option value="">
-                Failed to load products
-            </option>`;
-
-    }
-
-}
-
-
-/* ==============================
-   UPDATE LABEL
-============================== */
-
-function updatePreview() {
-
-
-    const id =
-        document.getElementById(
-            "productSelect"
-        ).value;
-
-
-    if (!id) {
-
-        return;
-
-    }
-
-
-    const product =
-        products.find(
-            p =>
-                String(p.id) ===
-                String(id)
-        );
-
-
-    if (!product) {
-
-        return;
-
-    }
-
-
-    /* PRODUCT NAME */
-
-    document.getElementById(
-        "previewName"
-    ).textContent =
-        product.name;
-
-
-    /* BARCODE NUMBER */
-
-    document.getElementById(
-        "previewBarcode"
-    ).textContent =
-        product.barcode;
-
-
-    /* PRICE */
-
-    document.getElementById(
-        "previewPrice"
-    ).textContent =
-        `₹${product.selling}`;
-
-
-    /* GENERATE BARCODE */
-
-    JsBarcode(
-        "#barcode",
-        product.barcode,
-        {
-
-            format: "CODE128",
-
-            width: 1.7,
-
-            height: 40,
-
-            displayValue: false,
-
-            margin: 0
-
+            return;
         }
-    );
-
-}
 
 
-/* ==============================
-   PRINT LABEL
-============================== */
+        /*
+         * FIRST TEST
+         * Print one label only.
+         */
 
-function printLabel() {
+        if (quantity !== 1) {
+
+            alert(
+                "For the first test, please print only 1 label."
+            );
+
+            return;
+        }
 
 
-    const id =
-        document.getElementById(
-            "productSelect"
-        ).value;
-
-
-    /* NO PRODUCT */
-
-    if (!id) {
-
-        alert(
-            "Please select a product."
-        );
-
-        return;
+        window.print();
 
     }
 
 
-    const quantity =
-        parseInt(
-            document.getElementById(
-                "quantity"
-            ).value
-        );
+    /* =========================
+       START
+    ========================= */
 
-
-    /* INVALID QUANTITY */
-
-    if (
-        !quantity ||
-        quantity < 1
-    ) {
-
-        alert(
-            "Enter a valid quantity."
-        );
-
-        return;
-
-    }
-
-
-    /*
-       First physical test:
-       one label only.
-    */
-
-    if (quantity !== 1) {
-
-        alert(
-            "For the first test, please print only 1 label."
-        );
-
-        return;
-
-    }
-
-
-    /* OPEN PRINT DIALOG */
-
-    window.print();
-
-}
-
-
-/* ==============================
-   START
-============================== */
-
-loadProducts();
-
+    loadProducts();
 
 </script>
-
 
 </body>
 </html>
