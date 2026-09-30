@@ -1,551 +1,344 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>TAANISH | Receipt</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
+<title>TAANISH - Receipt</title>
 
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
-            margin: 0;
-            padding: 20px;
-            background: #f2f2f2;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #111;
-        }
+*{
+    box-sizing:border-box;
+}
 
-        .receipt {
-            width: 58mm;
-            max-width: 58mm;
-            margin: auto;
-            background: #fff;
-            padding: 4mm 3mm;
-            font-size: 10px;
-        }
+html,
+body{
+    margin:0;
+    padding:0;
+    background:#f1f3f5;
+    font-family:Arial,Helvetica,sans-serif;
+    color:#111;
+}
 
-        .center {
-            text-align: center;
-        }
+body{
+    display:flex;
+    justify-content:center;
+    padding:20px;
+}
 
-        /* =========================
-           BRAND
-        ========================= */
+/* =========================
+   RECEIPT
+========================= */
 
-        .shop-name {
-            font-size: 24px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            margin-bottom: 2px;
-        }
+.receipt{
+    width:58mm;
+    background:#fff;
+    padding:4mm 3mm;
+    min-height:100mm;
+    font-size:11px;
+}
 
-        .shop-subtitle {
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            margin-bottom: 5px;
-        }
+/* =========================
+   HEADER
+========================= */
 
-        .shop-info {
-            font-size: 9px;
-            line-height: 1.4;
-        }
+.header{
+    text-align:center;
+    margin-bottom:8px;
+}
 
-        /* =========================
-           LINE
-        ========================= */
+.shop-name{
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:2px;
+    margin-bottom:2px;
+}
 
-        .line {
-            border-top: 1px dashed #000;
-            margin: 7px 0;
-        }
+.shop-type{
+    font-size:10px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
 
-        /* =========================
-           INVOICE INFO
-        ========================= */
+.shop-info{
+    font-size:9px;
+    margin-top:5px;
+    line-height:1.4;
+}
 
-        .invoice-info {
-            font-size: 9px;
-            line-height: 1.6;
-        }
+.divider{
+    border-top:1px dashed #000;
+    margin:8px 0;
+}
 
-        .invoice-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-        }
+/* =========================
+   INVOICE INFO
+========================= */
 
-        .invoice-row strong {
-            font-weight: 700;
-        }
+.info{
+    font-size:10px;
+    line-height:1.6;
+}
 
-        .invoice-value {
-            text-align: right;
-            word-break: break-word;
-        }
+.info-row{
+    display:flex;
+    justify-content:space-between;
+    gap:5px;
+}
 
-        /* =========================
-           ITEMS TABLE
-        ========================= */
+.info-label{
+    font-weight:bold;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            margin-top: 5px;
-        }
+/* =========================
+   ITEMS
+========================= */
 
-        th {
-            font-size: 8px;
-            font-weight: 700;
-            border-bottom: 1px solid #000;
-            padding: 4px 0;
-        }
+.items{
+    width:100%;
+}
 
-        td {
-            font-size: 8.5px;
-            padding: 5px 0;
-            vertical-align: top;
-            word-break: break-word;
-        }
+.item{
+    padding:5px 0;
+    border-bottom:1px dotted #aaa;
+}
 
-        .item {
-            width: 30%;
-            text-align: left;
-        }
+.item-name{
+    font-weight:bold;
+    font-size:10px;
+    word-break:break-word;
+}
 
-        .mrp {
-            width: 17%;
-            text-align: right;
-        }
+.item-details{
+    display:flex;
+    justify-content:space-between;
+    margin-top:2px;
+    font-size:9px;
+}
 
-        .rate {
-            width: 18%;
-            text-align: right;
-        }
+.item-details span{
+    white-space:nowrap;
+}
 
-        .qty {
-            width: 12%;
-            text-align: center;
-        }
+/* =========================
+   TOTALS
+========================= */
 
-        .total {
-            width: 23%;
-            text-align: right;
-        }
+.totals{
+    margin-top:7px;
+    font-size:10px;
+}
 
-        /* =========================
-           TOTAL
-        ========================= */
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    padding:2px 0;
+}
 
-        .summary {
-            margin-top: 5px;
-            font-size: 9px;
-        }
+.grand-total{
+    font-size:14px;
+    font-weight:800;
+    border-top:1px solid #000;
+    border-bottom:1px solid #000;
+    padding:6px 0;
+    margin-top:4px;
+}
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
-        }
+/* =========================
+   PAYMENT
+========================= */
 
-        .round-off {
-            font-size: 9px;
-        }
+.payment{
+    margin-top:7px;
+    font-size:10px;
+}
 
-        .grand-total {
-            margin-top: 3px;
-            padding: 7px 0;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
+.payment-row{
+    display:flex;
+    justify-content:space-between;
+    padding:2px 0;
+}
 
-            font-size: 14px;
-            font-weight: 800;
-        }
+.change{
+    font-weight:bold;
+}
 
-        /* =========================
-           PAYMENT
-        ========================= */
+/* =========================
+   FOOTER
+========================= */
 
-        .payment {
-            margin-top: 7px;
-            font-size: 9px;
-            line-height: 1.7;
-        }
+.footer{
+    text-align:center;
+    margin-top:12px;
+    font-size:9px;
+    line-height:1.5;
+}
 
-        .payment-row {
-            display: flex;
-            justify-content: space-between;
-        }
+.thank-you{
+    font-weight:bold;
+    font-size:10px;
+}
 
-        .change {
-            font-weight: 800;
-        }
+/* =========================
+   BUTTONS
+========================= */
 
-        /* =========================
-           FOOTER
-        ========================= */
+.actions{
+    width:58mm;
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+}
 
-        .thank-you {
-            margin-top: 12px;
-            font-size: 9px;
-            font-weight: 700;
-        }
+.actions button{
+    flex:1;
+    border:none;
+    padding:10px 5px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:bold;
+}
 
-        .thank-sub {
-            margin-top: 3px;
-            font-size: 8px;
-        }
+.print-btn{
+    background:#111827;
+    color:#fff;
+}
 
-        /* =========================
-           BUTTONS
-        ========================= */
+.back-btn{
+    background:#e5e7eb;
+    color:#111;
+}
 
-        .buttons {
-            width: 58mm;
-            max-width: 58mm;
-            margin: 15px auto;
-            display: flex;
-            gap: 6px;
-        }
+/* =========================
+   LOADING
+========================= */
 
-        button {
-            flex: 1;
-            padding: 10px 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 700;
-        }
+.loading{
+    text-align:center;
+    padding:20px 0;
+    font-size:11px;
+}
 
-        .print-btn {
-            background: #111;
-            color: #fff;
-        }
+.error{
+    text-align:center;
+    color:#b42318;
+    padding:20px 0;
+    font-size:11px;
+}
 
-        .back-btn {
-            background: #ddd;
-            color: #111;
-        }
+/* =========================
+   PRINT
+========================= */
 
-        /* =========================
-           ERROR
-        ========================= */
+@media print{
 
-        .error {
-            text-align: center;
-            color: #b00000;
-            font-size: 11px;
-            line-height: 1.5;
-        }
+    @page{
+        size:58mm auto;
+        margin:0;
+    }
 
-        /* =========================
-           PRINT
-        ========================= */
+    html,
+    body{
+        width:58mm;
+        margin:0;
+        padding:0;
+        background:#fff;
+    }
 
-        @media print {
+    body{
+        display:block;
+    }
 
-            @page {
-                size: 58mm auto;
-                margin: 0;
-            }
+    .receipt{
+        width:58mm;
+        min-height:0;
+        padding:3mm 3mm;
+        margin:0;
+    }
 
-            html,
-            body {
-                width: 58mm;
-                margin: 0;
-                padding: 0;
-                background: #fff;
-            }
+    .actions{
+        display:none !important;
+    }
 
-            .receipt {
-                width: 58mm;
-                max-width: 58mm;
-                margin: 0;
-                padding: 3mm;
-            }
+    .loading,
+    .error{
+        display:none;
+    }
 
-            .buttons {
-                display: none;
-            }
-        }
+}
 
-    </style>
+/* =========================
+   SCREEN PREVIEW
+========================= */
+
+@media screen{
+
+    .page-wrapper{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+    }
+
+}
+
+</style>
 
 </head>
 
-
 <body>
 
+<div class="page-wrapper">
 
-<div class="receipt" id="receipt">
+    <!-- RECEIPT -->
 
-    <!-- =========================
-         HEADER
-    ========================= -->
+    <div class="receipt" id="receipt">
 
-    <div class="center">
-
-        <div class="shop-name">
-            TAANISH
-        </div>
-
-        <div class="shop-subtitle">
-            FANCY STORE
-        </div>
-
-        <div class="shop-info">
-            Thank you for shopping with us
+        <div class="loading">
+            Loading receipt...
         </div>
 
     </div>
 
 
-    <div class="line"></div>
+    <!-- ACTIONS -->
 
+    <div class="actions">
 
-    <!-- =========================
-         INVOICE INFORMATION
-    ========================= -->
-
-    <div class="invoice-info">
-
-        <div class="invoice-row">
-            <strong>Invoice</strong>
-
-            <span
-                class="invoice-value"
-                id="invoiceNumber">
-                Loading...
-            </span>
-        </div>
-
-
-        <div class="invoice-row">
-            <strong>Date</strong>
-
-            <span
-                class="invoice-value"
-                id="invoiceDate">
-                Loading...
-            </span>
-        </div>
-
-
-        <div class="invoice-row">
-            <strong>Customer</strong>
-
-            <span
-                class="invoice-value"
-                id="customerName">
-                Walk-in Customer
-            </span>
-        </div>
-
-    </div>
-
-
-    <div class="line"></div>
-
-
-    <!-- =========================
-         ITEMS
-    ========================= -->
-
-    <table>
-
-        <thead>
-
-            <tr>
-
-                <th class="item">
-                    Item
-                </th>
-
-                <th class="mrp">
-                    MRP
-                </th>
-
-                <th class="rate">
-                    Rate
-                </th>
-
-                <th class="qty">
-                    Qty
-                </th>
-
-                <th class="total">
-                    Total
-                </th>
-
-            </tr>
-
-        </thead>
-
-
-        <tbody id="itemsBody"></tbody>
-
-    </table>
-
-
-    <div class="line"></div>
-
-
-    <!-- =========================
-         TOTAL
-    ========================= -->
-
-    <div class="summary">
-
-        <div class="summary-row round-off">
-
-            <span>
-                Round Off
-            </span>
-
-            <span id="roundOff">
-                ₹0.00
-            </span>
-
-        </div>
-
-
-        <div class="summary-row grand-total">
-
-            <span>
-                GRAND TOTAL
-            </span>
-
-            <span>
-                ₹<span id="grandTotal">
-                    0.00
-                </span>
-            </span>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         PAYMENT
-    ========================= -->
-
-    <div class="payment">
-
-        <div class="payment-row">
-
-            <strong>
-                Payment
-            </strong>
-
-            <span id="paymentMethod">
-                Cash
-            </span>
-
-        </div>
-
-
-        <div
-            class="payment-row"
-            id="cashReceivedRow"
-            style="display:none;"
+        <button
+            class="print-btn"
+            onclick="printReceipt()"
         >
+            PRINT
+        </button>
 
-            <strong>
-                Cash Received
-            </strong>
-
-            <span id="cashReceived">
-                ₹0.00
-            </span>
-
-        </div>
-
-
-        <div
-            class="payment-row change"
-            id="changeRow"
-            style="display:none;"
+        <button
+            class="back-btn"
+            onclick="goBack()"
         >
-
-            <strong>
-                Change
-            </strong>
-
-            <span id="changeAmount">
-                ₹0.00
-            </span>
-
-        </div>
+            ← NEXT SALE
+        </button>
 
     </div>
-
-
-    <div class="line"></div>
-
-
-    <!-- =========================
-         FOOTER
-    ========================= -->
-
-    <div class="center thank-you">
-        Thank you for shopping with TAANISH
-    </div>
-
-    <div class="center thank-sub">
-        Please visit us again
-    </div>
-
-
-</div>
-
-
-<!-- =========================
-     BUTTONS
-========================= -->
-
-<div class="buttons">
-
-    <button
-        class="print-btn"
-        onclick="window.print()">
-        PRINT
-    </button>
-
-    <button
-        class="back-btn"
-        onclick="window.location.href='sales-history.html'">
-        BACK
-    </button>
 
 </div>
 
 
 <script>
 
-const API_URL =
-    "https://taanish.onrender.com";
+const API_URL = "https://taanish.onrender.com";
+
+const token =
+    localStorage.getItem("access_token");
 
 
 /* =========================
-   AUTH
+   LOGIN CHECK
 ========================= */
 
-const token =
-    localStorage.getItem(
-        "access_token"
-    );
-
-
-if (!token) {
+if(!token){
 
     window.location.href =
         "login.html";
@@ -554,25 +347,86 @@ if (!token) {
 
 
 /* =========================
-   LAST INVOICE
+   AUTH
 ========================= */
 
-const invoiceNumber =
-    localStorage.getItem(
-        "last_invoice_number"
-    );
+function getHeaders(){
+
+    return {
+
+        "Authorization":
+            "Bearer " + token,
+
+        "Content-Type":
+            "application/json"
+
+    };
+
+}
 
 
 /* =========================
-   AUTH HEADERS
+   MONEY
 ========================= */
 
-function authHeaders() {
+function money(value){
 
-    return {
-        "Authorization":
-            `Bearer ${token}`
-    };
+    return "₹" +
+        Number(value || 0)
+        .toFixed(2);
+
+}
+
+
+/* =========================
+   HTML SAFETY
+========================= */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================
+   DATE
+========================= */
+
+function formatDate(value){
+
+    if(!value){
+
+        return "-";
+
+    }
+
+    const date =
+        new Date(value);
+
+    if(
+        isNaN(date.getTime())
+    ){
+
+        return String(value);
+
+    }
+
+    return date.toLocaleString(
+        "en-IN",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
 
 }
 
@@ -581,36 +435,114 @@ function authHeaders() {
    LOAD RECEIPT
 ========================= */
 
-async function loadReceipt() {
+async function loadReceipt(){
 
-    try {
+    const receipt =
+        document.getElementById(
+            "receipt"
+        );
 
-        if (!invoiceNumber) {
 
-            throw new Error(
-                "Invoice number not found."
-            );
+    const invoiceNumber =
+        localStorage.getItem(
+            "last_invoice_number"
+        );
+
+
+    const saleId =
+        localStorage.getItem(
+            "last_sale_id"
+        );
+
+
+    if(!invoiceNumber && !saleId){
+
+        receipt.innerHTML =
+            `
+            <div class="error">
+                No invoice selected.
+            </div>
+            `;
+
+        return;
+
+    }
+
+
+    try{
+
+        let sale = null;
+
+
+        /* =========================
+           GET SALE
+        ========================= */
+
+        if(saleId){
+
+            const response =
+                await fetch(
+                    API_URL +
+                    "/sales/" +
+                    saleId,
+                    {
+                        method:"GET",
+                        headers:getHeaders()
+                    }
+                );
+
+
+            if(
+                response.status === 401
+            ){
+
+                localStorage.removeItem(
+                    "access_token"
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return;
+
+            }
+
+
+            if(!response.ok){
+
+                throw new Error(
+                    "Unable to load sale"
+                );
+
+            }
+
+
+            sale =
+                await response.json();
 
         }
 
 
         /* =========================
-           GET SALES
+           PRODUCTS
         ========================= */
 
-        const salesResponse =
+        let products = [];
+
+
+        const productsResponse =
             await fetch(
-                `${API_URL}/sales/`,
+                API_URL + "/products/",
                 {
-                    headers:
-                        authHeaders()
+                    method:"GET",
+                    headers:getHeaders()
                 }
             );
 
 
-        if (
-            salesResponse.status === 401
-        ) {
+        if(
+            productsResponse.status === 401
+        ){
 
             localStorage.removeItem(
                 "access_token"
@@ -624,362 +556,418 @@ async function loadReceipt() {
         }
 
 
-        if (!salesResponse.ok) {
+        if(productsResponse.ok){
 
-            throw new Error(
-                "Unable to load sales."
-            );
-
-        }
-
-
-        const sales =
-            await salesResponse.json();
-
-
-        const sale =
-            sales.find(
-                s =>
-                    s.invoice_number ===
-                    invoiceNumber
-            );
-
-
-        if (!sale) {
-
-            throw new Error(
-                "Sale not found: " +
-                invoiceNumber
-            );
+            products =
+                await productsResponse.json();
 
         }
-
-
-        /* =========================
-           SALE DETAILS
-        ========================= */
-
-        const detailResponse =
-            await fetch(
-                `${API_URL}/sales/${sale.id}`,
-                {
-                    headers:
-                        authHeaders()
-                }
-            );
-
-
-        const detailedSale =
-            detailResponse.ok
-                ? await detailResponse.json()
-                : sale;
-
-
-        /* =========================
-           PRODUCTS
-        ========================= */
-
-        const productsResponse =
-            await fetch(
-                `${API_URL}/products/`,
-                {
-                    headers:
-                        authHeaders()
-                }
-            );
-
-
-        const products =
-            productsResponse.ok
-                ? await productsResponse.json()
-                : [];
 
 
         const productMap = {};
 
 
-        products.forEach(
-            product => {
+        if(Array.isArray(products)){
 
-                productMap[
-                    product.id
-                ] = product;
+            products.forEach(
+                function(product){
 
-            }
-        );
+                    productMap[
+                        product.id
+                    ] = product;
 
-
-        /* =========================
-           BASIC INFO
-        ========================= */
-
-        document.getElementById(
-            "invoiceNumber"
-        ).textContent =
-            detailedSale.invoice_number ||
-            sale.invoice_number;
-
-
-        const dateValue =
-            detailedSale.created_at ||
-            sale.created_at;
-
-
-        if (dateValue) {
-
-            const date =
-                new Date(
-                    dateValue
-                );
-
-            document.getElementById(
-                "invoiceDate"
-            ).textContent =
-                date.toLocaleString(
-                    "en-IN"
-                );
+                }
+            );
 
         }
 
 
-        document.getElementById(
-            "customerName"
-        ).textContent =
-
-            detailedSale.customer_id
-
-                ? `Customer #${detailedSale.customer_id}`
-
-                : "Walk-in Customer";
-
-
         /* =========================
-           ITEMS
+           SALE ITEMS
         ========================= */
-
-        const itemsBody =
-            document.getElementById(
-                "itemsBody"
-            );
-
-
-        itemsBody.innerHTML = "";
-
 
         const items =
-            detailedSale.items ||
-            sale.items ||
-            [];
+            Array.isArray(sale.items)
+                ? sale.items
+                : [];
 
 
-        let totalBeforeRound = 0;
+        let itemsHtml = "";
 
 
-        items.forEach(
-            item => {
+        if(items.length === 0){
 
-                const quantity =
-                    Number(
-                        item.quantity || 0
-                    );
-
-
-                const rate =
-                    Number(
-                        item.price || 0
-                    );
-
-
-                const itemTotal =
-                    Number(
-                        item.total
-                    ) ||
-                    (
-                        quantity *
-                        rate
-                    );
-
-
-                totalBeforeRound +=
-                    itemTotal;
-
-
-                const product =
-                    productMap[
-                        item.product_id
-                    ] || {};
-
-
-                const productName =
-                    product.name ||
-                    `Product #${item.product_id}`;
-
-
-                const mrp =
-                    Number(
-                        product.mrp || 0
-                    );
-
-
-                const row =
-                    document.createElement(
-                        "tr"
-                    );
-
-
-                row.innerHTML = `
-
-                    <td class="item">
-                        ${escapeHtml(
-                            productName
-                        )}
-                    </td>
-
-                    <td class="mrp">
-                        ₹${mrp.toFixed(2)}
-                    </td>
-
-                    <td class="rate">
-                        ₹${rate.toFixed(2)}
-                    </td>
-
-                    <td class="qty">
-                        ${quantity}
-                    </td>
-
-                    <td class="total">
-                        ₹${itemTotal.toFixed(2)}
-                    </td>
-
+            itemsHtml =
+                `
+                <div class="item">
+                    No items found
+                </div>
                 `;
 
+        }
+        else{
 
-                itemsBody.appendChild(
-                    row
-                );
+            items.forEach(
+                function(item){
 
-            }
-        );
+                    const product =
+                        productMap[
+                            item.product_id
+                        ];
 
 
-        /* =========================
-           ROUND OFF
-        ========================= */
+                    const productName =
+                        product
+                            ? product.name
+                            : "Product #" +
+                              item.product_id;
 
-        const grandTotal =
-            Math.round(
-                totalBeforeRound
+
+                    const quantity =
+                        Number(
+                            item.quantity || 0
+                        );
+
+
+                    const price =
+                        Number(
+                            item.price || 0
+                        );
+
+
+                    const total =
+                        Number(
+                            item.total ||
+                            price * quantity
+                        );
+
+
+                    itemsHtml +=
+                        `
+                        <div class="item">
+
+                            <div class="item-name">
+                                ${escapeHtml(
+                                    productName
+                                )}
+                            </div>
+
+                            <div class="item-details">
+
+                                <span>
+                                    ${quantity} × ${money(price)}
+                                </span>
+
+                                <span>
+                                    ${money(total)}
+                                </span>
+
+                            </div>
+
+                        </div>
+                        `;
+
+                }
             );
 
-
-        const roundOff =
-            grandTotal -
-            totalBeforeRound;
-
-
-        document.getElementById(
-            "roundOff"
-        ).textContent =
-
-            `${roundOff >= 0 ? "+" : ""}₹${roundOff.toFixed(2)}`;
-
-
-        document.getElementById(
-            "grandTotal"
-        ).textContent =
-            grandTotal.toFixed(2);
+        }
 
 
         /* =========================
-           PAYMENT
+           PAYMENT DATA
         ========================= */
 
-        const payment =
-            detailedSale.payment_method ||
+        const paymentMethod =
             sale.payment_method ||
             "Cash";
 
 
-        document.getElementById(
-            "paymentMethod"
-        ).textContent =
-            payment;
-
-
-        /* =========================
-           CASH
-        ========================= */
-
-        const savedCash =
+        const cashReceived =
             localStorage.getItem(
                 "last_cash_received"
             );
 
 
-        if (
-            payment === "Cash" &&
-            savedCash !== null
-        ) {
-
-            const cash =
-                Number(savedCash);
+        const change =
+            localStorage.getItem(
+                "last_change"
+            );
 
 
-            const change =
-                cash -
-                grandTotal;
+        let paymentHtml = "";
 
 
-            document.getElementById(
-                "cashReceivedRow"
-            ).style.display =
-                "flex";
+        if(paymentMethod === "Cash"){
 
+            paymentHtml =
+                `
+                <div class="payment">
 
-            document.getElementById(
-                "cashReceived"
-            ).textContent =
-                `₹${cash.toFixed(2)}`;
+                    <div class="payment-row">
+                        <span>Payment</span>
+                        <strong>Cash</strong>
+                    </div>
 
+                    ${
+                        cashReceived !== null
+                        ?
+                        `
+                        <div class="payment-row">
+                            <span>Cash Received</span>
+                            <span>
+                                ${money(cashReceived)}
+                            </span>
+                        </div>
+                        `
+                        :
+                        ""
+                    }
 
-            document.getElementById(
-                "changeRow"
-            ).style.display =
-                "flex";
+                    ${
+                        change !== null
+                        ?
+                        `
+                        <div class="payment-row change">
+                            <span>Change</span>
+                            <span>
+                                ${money(change)}
+                            </span>
+                        </div>
+                        `
+                        :
+                        ""
+                    }
 
+                </div>
+                `;
 
-            document.getElementById(
-                "changeAmount"
-            ).textContent =
-                `₹${change.toFixed(2)}`;
+        }
+        else{
+
+            paymentHtml =
+                `
+                <div class="payment">
+
+                    <div class="payment-row">
+
+                        <span>
+                            Payment
+                        </span>
+
+                        <strong>
+                            ${escapeHtml(
+                                paymentMethod
+                            )}
+                        </strong>
+
+                    </div>
+
+                </div>
+                `;
 
         }
 
 
-    }
+        /* =========================
+           CUSTOMER
+        ========================= */
 
-    catch (error) {
+        const customer =
+            sale.customer_id
+                ? "Customer #" +
+                  sale.customer_id
+                : "Walk-in Customer";
 
-        console.error(error);
 
+        /* =========================
+           RECEIPT HTML
+        ========================= */
 
-        document.getElementById(
-            "receipt"
-        ).innerHTML = `
+        receipt.innerHTML =
+            `
 
-            <div class="error">
+            <div class="header">
 
-                Failed to load receipt.
+                <div class="shop-name">
+                    TAANISH
+                </div>
 
-                <br><br>
+                <div class="shop-type">
+                    FANCY STORE
+                </div>
 
-                ${escapeHtml(
-                    error.message
-                )}
+                <div class="shop-info">
+                    Thank you for shopping with us
+                </div>
 
             </div>
 
-        `;
+
+            <div class="divider"></div>
+
+
+            <div class="info">
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Invoice
+                    </span>
+
+                    <span>
+                        ${escapeHtml(
+                            sale.invoice_number ||
+                            invoiceNumber ||
+                            "-"
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Date
+                    </span>
+
+                    <span>
+                        ${escapeHtml(
+                            formatDate(
+                                sale.created_at
+                            )
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="info-row">
+
+                    <span class="info-label">
+                        Customer
+                    </span>
+
+                    <span>
+                        ${escapeHtml(
+                            customer
+                        )}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="divider"></div>
+
+
+            <div class="items">
+
+                ${itemsHtml}
+
+            </div>
+
+
+            <div class="totals">
+
+                <div class="total-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ${money(
+                            sale.subtotal
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="total-row">
+
+                    <span>
+                        Discount
+                    </span>
+
+                    <span>
+                        ${money(
+                            sale.discount
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="total-row">
+
+                    <span>
+                        Tax
+                    </span>
+
+                    <span>
+                        ${money(
+                            sale.tax
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="total-row grand-total">
+
+                    <span>
+                        TOTAL
+                    </span>
+
+                    <span>
+                        ${money(
+                            sale.total
+                        )}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            ${paymentHtml}
+
+
+            <div class="divider"></div>
+
+
+            <div class="footer">
+
+                <div class="thank-you">
+                    Thank you for shopping with TAANISH
+                </div>
+
+                <div>
+                    Please visit us again
+                </div>
+
+            </div>
+
+            `;
+
+    }
+    catch(error){
+
+        console.error(
+            "Receipt error:",
+            error
+        );
+
+
+        receipt.innerHTML =
+            `
+            <div class="error">
+                Unable to load receipt.
+            </div>
+            `;
 
     }
 
@@ -987,47 +975,37 @@ async function loadReceipt() {
 
 
 /* =========================
-   ESCAPE HTML
+   PRINT
 ========================= */
 
-function escapeHtml(value) {
+function printReceipt(){
 
-    if (
-        value === null ||
-        value === undefined
-    ) {
+    /*
+       Small delay allows the browser
+       to finish rendering the receipt
+       before opening print dialog.
+    */
 
-        return "";
+    setTimeout(
+        function(){
 
-    }
+            window.print();
+
+        },
+        100
+    );
+
+}
 
 
-    return String(value)
+/* =========================
+   NEXT SALE
+========================= */
 
-        .replace(
-            /&/g,
-            "&amp;"
-        )
+function goBack(){
 
-        .replace(
-            /</g,
-            "&lt;"
-        )
-
-        .replace(
-            />/g,
-            "&gt;"
-        )
-
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+    window.location.href =
+        "sales.html";
 
 }
 
@@ -1039,7 +1017,6 @@ function escapeHtml(value) {
 loadReceipt();
 
 </script>
-
 
 </body>
 </html>
