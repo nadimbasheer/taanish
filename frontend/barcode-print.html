@@ -22,15 +22,15 @@
         .container {
             width: 100%;
             max-width: 700px;
-            margin: 0 auto;
+            margin: auto;
             background: white;
             padding: 25px;
             border-radius: 12px;
         }
 
         h1 {
-            margin-top: 0;
             text-align: center;
+            margin-top: 0;
         }
 
         .form-group {
@@ -61,38 +61,39 @@
             margin-top: 10px;
             border: none;
             border-radius: 6px;
-            cursor: pointer;
             background: #111;
             color: white;
+            cursor: pointer;
         }
 
-        button:hover {
-            background: #333;
-        }
+        /* =========================
+           58 × 25 MM LABEL
+        ========================= */
 
-        /* EXACT LABEL SIZE */
         .label-preview {
             width: 58mm;
             height: 25mm;
             margin: 25px auto;
-            border: 1px dashed #999;
+            padding: 1mm 1.5mm;
             background: white;
-            padding: 1.5mm;
+            border: 1px dashed #999;
             text-align: center;
             overflow: hidden;
         }
 
         .shop-name {
-            font-size: 10px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 800;
             line-height: 1;
             margin: 0;
         }
 
         .product-name {
-            font-size: 8px;
+            font-size: 10px;
+            font-weight: 600;
             line-height: 1;
             margin-top: 1mm;
+
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -100,25 +101,32 @@
 
         .barcode {
             display: block;
-            width: 48mm;
-            height: 9mm;
+
+            width: 52mm;
+            height: 11mm;
+
             margin: 1mm auto 0 auto;
         }
 
         .barcode-number {
-            font-size: 7px;
+            font-size: 8px;
+            font-weight: 600;
             line-height: 1;
             margin-top: 0.5mm;
         }
 
         .price {
-            font-size: 8px;
-            font-weight: bold;
+            font-size: 10px;
+            font-weight: 800;
             line-height: 1;
-            margin-top: 0.5mm;
+            margin-top: 0.7mm;
         }
 
-        /* PRINT SETTINGS */
+
+        /* =========================
+           PRINT
+        ========================= */
+
         @media print {
 
             @page {
@@ -130,17 +138,22 @@
             body {
                 width: 58mm;
                 height: 25mm;
+
                 margin: 0;
                 padding: 0;
+
                 background: white;
             }
 
             .container {
                 width: 58mm;
                 height: 25mm;
+
                 max-width: none;
+
                 margin: 0;
                 padding: 0;
+
                 background: white;
                 border-radius: 0;
             }
@@ -151,34 +164,43 @@
 
             .label-preview {
                 display: block !important;
+
                 width: 58mm;
                 height: 25mm;
+
                 margin: 0;
-                padding: 1.5mm;
+                padding: 1mm 1.5mm;
+
                 border: none;
+
                 background: white;
+
                 overflow: hidden;
             }
 
             .shop-name {
-                font-size: 10px;
+                font-size: 14px;
+                font-weight: 800;
             }
 
             .product-name {
-                font-size: 8px;
+                font-size: 10px;
+                font-weight: 600;
             }
 
             .barcode {
-                width: 48mm;
-                height: 9mm;
+                width: 52mm;
+                height: 11mm;
             }
 
             .barcode-number {
-                font-size: 7px;
+                font-size: 8px;
+                font-weight: 600;
             }
 
             .price {
-                font-size: 8px;
+                font-size: 10px;
+                font-weight: 800;
             }
         }
     </style>
@@ -191,15 +213,27 @@
     <h1>TAANISH Barcode Printer</h1>
 
     <div class="form-group">
-        <label for="productSelect">Select Product</label>
+
+        <label for="productSelect">
+            Select Product
+        </label>
 
         <select id="productSelect">
-            <option value="">Loading products...</option>
+
+            <option value="">
+                Loading products...
+            </option>
+
         </select>
+
     </div>
 
+
     <div class="form-group">
-        <label for="quantity">Number of Labels</label>
+
+        <label for="quantity">
+            Number of Labels
+        </label>
 
         <input
             type="number"
@@ -207,18 +241,28 @@
             value="1"
             min="1"
         >
+
     </div>
+
 
     <button onclick="printLabel()">
         PRINT LABEL
     </button>
 
-    <!-- 58 × 25 mm LABEL -->
-    <div class="label-preview" id="labelPreview">
+
+    <!-- =========================
+         ACTUAL 58 × 25 MM LABEL
+    ========================== -->
+
+    <div
+        class="label-preview"
+        id="labelPreview"
+    >
 
         <div class="shop-name">
             TAANISH
         </div>
+
 
         <div
             class="product-name"
@@ -227,10 +271,12 @@
             Product Name
         </div>
 
+
         <svg
             id="barcode"
             class="barcode"
         ></svg>
+
 
         <div
             class="barcode-number"
@@ -238,6 +284,7 @@
         >
             Barcode
         </div>
+
 
         <div
             class="price"
@@ -250,15 +297,25 @@
 
 </div>
 
+
 <script>
 
-const API_URL = "https://taanish.onrender.com";
+const API_URL =
+    "https://taanish.onrender.com";
 
-const token = localStorage.getItem("access_token");
+
+const token =
+    localStorage.getItem(
+        "access_token"
+    );
+
 
 if (!token) {
-    window.location.href = "login.html";
+
+    window.location.href =
+        "login.html";
 }
+
 
 let products = [];
 
@@ -271,23 +328,30 @@ async function loadProducts() {
 
     try {
 
-        const response = await fetch(
-            `${API_URL}/products/`,
-            {
-                headers: {
-                    "Authorization": `Bearer ${token}`
+        const response =
+            await fetch(
+                `${API_URL}/products/`,
+                {
+                    headers: {
+                        "Authorization":
+                            `Bearer ${token}`
+                    }
                 }
-            }
-        );
+            );
+
 
         if (response.status === 401) {
 
-            localStorage.removeItem("access_token");
+            localStorage.removeItem(
+                "access_token"
+            );
 
-            window.location.href = "login.html";
+            window.location.href =
+                "login.html";
 
             return;
         }
+
 
         if (!response.ok) {
 
@@ -296,37 +360,52 @@ async function loadProducts() {
             );
         }
 
-        products = await response.json();
+
+        products =
+            await response.json();
+
 
         const select =
             document.getElementById(
                 "productSelect"
             );
 
+
         select.innerHTML =
             `<option value="">
                 Select a product
             </option>`;
 
-        products.forEach(product => {
 
-            if (!product.barcode) {
-                return;
-            }
+        products.forEach(
+            product => {
 
-            const option =
-                document.createElement(
-                    "option"
+                if (!product.barcode) {
+                    return;
+                }
+
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    product.id;
+
+
+                option.textContent =
+                    `${product.name} - ${product.barcode} - ₹${product.selling}`;
+
+
+                select.appendChild(
+                    option
                 );
 
-            option.value = product.id;
+            }
+        );
 
-            option.textContent =
-                `${product.name} - ${product.barcode} - ₹${product.selling}`;
-
-            select.appendChild(option);
-
-        });
 
         select.addEventListener(
             "change",
@@ -351,7 +430,7 @@ async function loadProducts() {
 
 
 /* =========================
-   UPDATE LABEL PREVIEW
+   UPDATE LABEL
 ========================= */
 
 function updatePreview() {
@@ -361,42 +440,55 @@ function updatePreview() {
             "productSelect"
         ).value;
 
+
     if (!id) {
         return;
     }
 
+
     const product =
         products.find(
-            p => String(p.id) === String(id)
+            p =>
+                String(p.id) ===
+                String(id)
         );
+
 
     if (!product) {
         return;
     }
+
 
     document.getElementById(
         "previewName"
     ).textContent =
         product.name;
 
+
     document.getElementById(
         "previewBarcode"
     ).textContent =
         product.barcode;
+
 
     document.getElementById(
         "previewPrice"
     ).textContent =
         `₹${product.selling}`;
 
+
     JsBarcode(
         "#barcode",
         product.barcode,
         {
             format: "CODE128",
-            width: 1.4,
-            height: 35,
+
+            width: 1.8,
+
+            height: 42,
+
             displayValue: false,
+
             margin: 0
         }
     );
@@ -414,6 +506,7 @@ function printLabel() {
             "productSelect"
         ).value;
 
+
     if (!id) {
 
         alert(
@@ -423,12 +516,14 @@ function printLabel() {
         return;
     }
 
+
     const quantity =
         parseInt(
             document.getElementById(
                 "quantity"
             ).value
         );
+
 
     if (!quantity || quantity < 1) {
 
@@ -439,7 +534,11 @@ function printLabel() {
         return;
     }
 
-    /* First physical test = 1 label */
+
+    /*
+       First physical test:
+       print exactly ONE label.
+    */
 
     if (quantity !== 1) {
 
@@ -450,13 +549,10 @@ function printLabel() {
         return;
     }
 
+
     window.print();
 }
 
-
-/* =========================
-   START
-========================= */
 
 loadProducts();
 
