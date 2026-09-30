@@ -20,8 +20,9 @@
         }
 
         .container {
+            width: 100%;
             max-width: 700px;
-            margin: auto;
+            margin: 0 auto;
             background: white;
             padding: 25px;
             border-radius: 12px;
@@ -50,6 +51,12 @@
             font-size: 16px;
         }
 
+        select,
+        input {
+            border: 1px solid #999;
+            border-radius: 5px;
+        }
+
         button {
             margin-top: 10px;
             border: none;
@@ -59,25 +66,32 @@
             color: white;
         }
 
+        button:hover {
+            background: #333;
+        }
+
+        /* EXACT LABEL SIZE */
         .label-preview {
             width: 58mm;
             height: 25mm;
             margin: 25px auto;
             border: 1px dashed #999;
             background: white;
-            padding: 2mm;
+            padding: 1.5mm;
             text-align: center;
             overflow: hidden;
         }
 
         .shop-name {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             line-height: 1;
+            margin: 0;
         }
 
         .product-name {
-            font-size: 9px;
+            font-size: 8px;
+            line-height: 1;
             margin-top: 1mm;
             white-space: nowrap;
             overflow: hidden;
@@ -85,45 +99,86 @@
         }
 
         .barcode {
+            display: block;
             width: 48mm;
-            height: 10mm;
-            margin-top: 1mm;
+            height: 9mm;
+            margin: 1mm auto 0 auto;
         }
 
         .barcode-number {
-            font-size: 8px;
+            font-size: 7px;
             line-height: 1;
+            margin-top: 0.5mm;
         }
 
         .price {
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
-            margin-top: 1mm;
+            line-height: 1;
+            margin-top: 0.5mm;
         }
 
+        /* PRINT SETTINGS */
         @media print {
+
             @page {
                 size: 58mm 25mm;
                 margin: 0;
             }
 
+            html,
             body {
+                width: 58mm;
+                height: 25mm;
                 margin: 0;
                 padding: 0;
                 background: white;
             }
 
             .container {
-                display: none;
+                width: 58mm;
+                height: 25mm;
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                background: white;
+                border-radius: 0;
+            }
+
+            .container > *:not(.label-preview) {
+                display: none !important;
             }
 
             .label-preview {
-                display: block;
+                display: block !important;
                 width: 58mm;
                 height: 25mm;
                 margin: 0;
+                padding: 1.5mm;
                 border: none;
-                padding: 2mm;
+                background: white;
+                overflow: hidden;
+            }
+
+            .shop-name {
+                font-size: 10px;
+            }
+
+            .product-name {
+                font-size: 8px;
+            }
+
+            .barcode {
+                width: 48mm;
+                height: 9mm;
+            }
+
+            .barcode-number {
+                font-size: 7px;
+            }
+
+            .price {
+                font-size: 8px;
             }
         }
     </style>
@@ -137,6 +192,7 @@
 
     <div class="form-group">
         <label for="productSelect">Select Product</label>
+
         <select id="productSelect">
             <option value="">Loading products...</option>
         </select>
@@ -144,29 +200,58 @@
 
     <div class="form-group">
         <label for="quantity">Number of Labels</label>
-        <input type="number" id="quantity" value="1" min="1">
+
+        <input
+            type="number"
+            id="quantity"
+            value="1"
+            min="1"
+        >
     </div>
 
-    <button onclick="printLabel()">PRINT LABEL</button>
+    <button onclick="printLabel()">
+        PRINT LABEL
+    </button>
 
+    <!-- 58 × 25 mm LABEL -->
     <div class="label-preview" id="labelPreview">
-        <div class="shop-name">TAANISH</div>
-        <div class="product-name" id="previewName">Product Name</div>
 
-        <svg id="barcode" class="barcode"></svg>
+        <div class="shop-name">
+            TAANISH
+        </div>
 
-        <div class="barcode-number" id="previewBarcode">
+        <div
+            class="product-name"
+            id="previewName"
+        >
+            Product Name
+        </div>
+
+        <svg
+            id="barcode"
+            class="barcode"
+        ></svg>
+
+        <div
+            class="barcode-number"
+            id="previewBarcode"
+        >
             Barcode
         </div>
 
-        <div class="price" id="previewPrice">
+        <div
+            class="price"
+            id="previewPrice"
+        >
             ₹0
         </div>
+
     </div>
 
 </div>
 
 <script>
+
 const API_URL = "https://taanish.onrender.com";
 
 const token = localStorage.getItem("access_token");
@@ -177,36 +262,62 @@ if (!token) {
 
 let products = [];
 
+
+/* =========================
+   LOAD PRODUCTS
+========================= */
+
 async function loadProducts() {
+
     try {
-        const response = await fetch(`${API_URL}/products/`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
+
+        const response = await fetch(
+            `${API_URL}/products/`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
             }
-        });
+        );
 
         if (response.status === 401) {
+
             localStorage.removeItem("access_token");
+
             window.location.href = "login.html";
+
             return;
         }
 
         if (!response.ok) {
-            throw new Error("Could not load products");
+
+            throw new Error(
+                "Could not load products"
+            );
         }
 
         products = await response.json();
 
-        const select = document.getElementById("productSelect");
+        const select =
+            document.getElementById(
+                "productSelect"
+            );
 
-        select.innerHTML = `
-            <option value="">Select a product</option>
-        `;
+        select.innerHTML =
+            `<option value="">
+                Select a product
+            </option>`;
 
         products.forEach(product => {
-            if (!product.barcode) return;
 
-            const option = document.createElement("option");
+            if (!product.barcode) {
+                return;
+            }
+
+            const option =
+                document.createElement(
+                    "option"
+                );
 
             option.value = product.id;
 
@@ -214,82 +325,141 @@ async function loadProducts() {
                 `${product.name} - ${product.barcode} - ₹${product.selling}`;
 
             select.appendChild(option);
+
         });
 
-        select.addEventListener("change", updatePreview);
+        select.addEventListener(
+            "change",
+            updatePreview
+        );
 
-    } catch (error) {
+    }
+
+    catch (error) {
+
         console.error(error);
 
-        document.getElementById("productSelect").innerHTML =
-            `<option value="">Failed to load products</option>`;
+        document.getElementById(
+            "productSelect"
+        ).innerHTML =
+            `<option value="">
+                Failed to load products
+            </option>`;
+
     }
 }
 
+
+/* =========================
+   UPDATE LABEL PREVIEW
+========================= */
+
 function updatePreview() {
 
-    const id = document.getElementById("productSelect").value;
+    const id =
+        document.getElementById(
+            "productSelect"
+        ).value;
 
     if (!id) {
         return;
     }
 
-    const product = products.find(p => String(p.id) === String(id));
+    const product =
+        products.find(
+            p => String(p.id) === String(id)
+        );
 
     if (!product) {
         return;
     }
 
-    document.getElementById("previewName").textContent =
+    document.getElementById(
+        "previewName"
+    ).textContent =
         product.name;
 
-    document.getElementById("previewBarcode").textContent =
+    document.getElementById(
+        "previewBarcode"
+    ).textContent =
         product.barcode;
 
-    document.getElementById("previewPrice").textContent =
+    document.getElementById(
+        "previewPrice"
+    ).textContent =
         `₹${product.selling}`;
 
-    JsBarcode("#barcode", product.barcode, {
-        format: "CODE128",
-        width: 1.4,
-        height: 35,
-        displayValue: false,
-        margin: 0
-    });
+    JsBarcode(
+        "#barcode",
+        product.barcode,
+        {
+            format: "CODE128",
+            width: 1.4,
+            height: 35,
+            displayValue: false,
+            margin: 0
+        }
+    );
 }
+
+
+/* =========================
+   PRINT
+========================= */
 
 function printLabel() {
 
-    const id = document.getElementById("productSelect").value;
+    const id =
+        document.getElementById(
+            "productSelect"
+        ).value;
 
     if (!id) {
-        alert("Please select a product.");
+
+        alert(
+            "Please select a product."
+        );
+
         return;
     }
 
     const quantity =
-        parseInt(document.getElementById("quantity").value);
+        parseInt(
+            document.getElementById(
+                "quantity"
+            ).value
+        );
 
     if (!quantity || quantity < 1) {
-        alert("Enter a valid quantity.");
+
+        alert(
+            "Enter a valid quantity."
+        );
+
         return;
     }
 
-    /*
-       For the first test we print one label.
-       Quantity printing will be expanded after
-       the first physical printer test.
-    */
+    /* First physical test = 1 label */
 
     if (quantity !== 1) {
-        alert("For the first test, please print only 1 label.");
+
+        alert(
+            "For the first test, please print only 1 label."
+        );
+
         return;
     }
 
     window.print();
 }
 
+
+/* =========================
+   START
+========================= */
+
 loadProducts();
+
 </script>
 
 </body>
